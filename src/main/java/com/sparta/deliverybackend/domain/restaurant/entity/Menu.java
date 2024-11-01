@@ -19,12 +19,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "menu")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Menu extends BaseTimeStampEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

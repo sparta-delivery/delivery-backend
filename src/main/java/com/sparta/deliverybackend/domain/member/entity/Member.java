@@ -12,8 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "member")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,11 +38,10 @@ public class Member extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false)
+	@Column(name = "join_path", nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private JoinPath joinPath;
 
 	@Column
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime deletedAt;
 }

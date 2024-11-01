@@ -2,8 +2,6 @@ package com.sparta.deliverybackend.domain.order.entity;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import com.sparta.deliverybackend.domain.member.entity.Member;
 
 import jakarta.persistence.Column;
@@ -16,8 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,11 +39,9 @@ public class Order {
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
 
-	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column
 	private LocalDateTime createdAt;
 
-	@Column()
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column
 	private LocalDateTime completedAt;
 }

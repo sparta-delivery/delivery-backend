@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "favorite_restaurant")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

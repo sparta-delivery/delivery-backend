@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "manager")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
