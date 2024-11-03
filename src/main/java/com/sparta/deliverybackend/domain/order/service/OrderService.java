@@ -1,0 +1,58 @@
+package com.sparta.deliverybackend.domain.order.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sparta.deliverybackend.domain.member.entity.Member;
+import com.sparta.deliverybackend.domain.order.controller.dto.OrderMenuDto;
+import com.sparta.deliverybackend.domain.order.controller.dto.OrderResponseDto;
+import com.sparta.deliverybackend.domain.order.entity.Order;
+import com.sparta.deliverybackend.domain.order.entity.OrderMenu;
+import com.sparta.deliverybackend.domain.order.entity.OrderStatus;
+import com.sparta.deliverybackend.domain.order.repository.OrderMenuRepository;
+import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
+import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
+import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+	private final OrderRepository orderRepository;
+	private final OrderMenuRepository orderMenuRepository;
+	private final MenuRepository menuRepository;
+
+	@Transactional
+	public OrderResponseDto createOrder(Member member, List<OrderMenuDto> orderMenuReqs) {
+
+		Order order = Order.builder()
+			.orderStatus(OrderStatus.WAIT)
+			.member(member)
+			.createdAt(LocalDateTime.now())
+			.build();
+
+		orderRepository.save(order);
+
+		List<OrderMenu> orderMenus = orderMenuReqs.stream()
+			.map(orderMenuReq -> {
+				Menu menu = menuRepository.findById(orderMenuReq.getMenu().getId())
+					.orElseThrow(
+						() -> new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenu().getId()));
+				OrderMenu orderMenu = OrderMenu.builder()
+					.menu(menu)
+					.order(order)
+					.quantity(orderMenuReq.getQuantity())
+					.build();
+				return orderMenuRepository.save(orderMenu);
+
+			}).toList();
+
+		return OrderResponseDto.of(order, orderMenus);
+
+	}
+}

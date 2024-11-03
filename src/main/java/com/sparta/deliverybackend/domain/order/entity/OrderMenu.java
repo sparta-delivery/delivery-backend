@@ -2,6 +2,7 @@ package com.sparta.deliverybackend.domain.order.entity;
 
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,9 @@ public class OrderMenu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(nullable = false)
+	private Long quantity;
 
 	@ManyToOne
 	@JoinColumn(name = "menu_id")
