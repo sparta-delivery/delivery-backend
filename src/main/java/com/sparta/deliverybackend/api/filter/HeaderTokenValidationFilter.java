@@ -21,7 +21,7 @@ public class HeaderTokenValidationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws
 		IOException, ServletException {
-		if (!this.isApplicable(req)) {
+		if (this.isApplicable(req)) {
 			chain.doFilter(req, res);
 			return;
 		}
