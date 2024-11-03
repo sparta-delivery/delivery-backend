@@ -23,7 +23,6 @@ public class JwtHelper {
 
 	@Value("${jwt.token.expires.in}")
 	private Long tokenExpiresIn;
-
 	private Key key;
 
 	@PostConstruct
