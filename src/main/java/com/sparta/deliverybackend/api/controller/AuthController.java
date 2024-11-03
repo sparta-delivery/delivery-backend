@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sparta.deliverybackend.api.controller.dto.LoginReqDto;
+import com.sparta.deliverybackend.api.controller.dto.LoginResDto;
+import com.sparta.deliverybackend.api.controller.dto.RegisterReqDto;
+import com.sparta.deliverybackend.api.service.AuthService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -18,7 +23,7 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<Void> register(@RequestBody RegisterReqDto req) {
-
+		authService.register(req);
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.build();
@@ -28,6 +33,6 @@ public class AuthController {
 	public ResponseEntity<LoginResDto> login(@RequestBody LoginReqDto req) {
 		return ResponseEntity
 			.status(HttpStatus.OK)
-			.build(authService.login(req));
+			.body(authService.login(req));
 	}
 }
