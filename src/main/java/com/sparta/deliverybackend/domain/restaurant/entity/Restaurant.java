@@ -34,10 +34,10 @@ public class Restaurant extends BaseTimeStampEntity {
 	private String name;
 
 	@Column
-	private LocalDateTime openTime;
+	private String openTime;
 
 	@Column
-	private LocalDateTime closeTime;
+	private String closeTime;
 
 	@Column
 	private Integer minPrice;
@@ -48,4 +48,12 @@ public class Restaurant extends BaseTimeStampEntity {
 	@ManyToOne
 	@JoinColumn(name = "manager_id")
 	private Manager manager;
+
+	public Restaurant(String name, String openTime, String closeTime, int minPrice, Manager managerId) {
+		this.name = name;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.minPrice = minPrice;
+		this.manager = managerId;
+	}
 }
