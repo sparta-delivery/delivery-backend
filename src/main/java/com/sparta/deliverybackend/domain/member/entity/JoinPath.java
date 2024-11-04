@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum JoinPath {
-	KAKAO("KAKAO"),
+	OAUTH("OAUTH"),
 	BASIC("BASIC");
 
 	private final String joinPathValue;

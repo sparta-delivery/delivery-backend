@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderMenuDto;
@@ -61,7 +61,7 @@ public class OrderService {
 					.build();
 
 			}).toList();
-	
+
 		List<OrderMenu> savedOrderMenus = orderMenuRepository.saveAll(orderMenus);
 
 		return OrderResponseDto.of(order, savedOrderMenus);
