@@ -54,4 +54,16 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.minPrice = minPrice;
 		this.manager = managerId;
 	}
+
+	public void modify(String name, String openTime, String closeTime, int minPrice, Manager managerId){
+		this.name = name;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.minPrice = minPrice;
+		this.manager = managerId;
+	}
+
+	public void delete(){
+		this.deletedAt = LocalDateTime.now();
+	}
 }
