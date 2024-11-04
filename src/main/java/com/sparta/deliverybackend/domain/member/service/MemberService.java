@@ -27,6 +27,7 @@ public class MemberService {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 		member.validateAuthority(verifiedMember.id());
-		memberRepository.delete(member);
+		member.delete();
+		memberRepository.save(member);
 	}
 }
