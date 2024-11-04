@@ -2,7 +2,11 @@ package com.sparta.deliverybackend.domain.member.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
+import com.sparta.deliverybackend.domain.member.controller.dto.MemberUpdateReqDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,4 +48,18 @@ public class Member extends BaseTimeStampEntity {
 
 	@Column
 	private LocalDateTime deletedAt;
+
+	public void validateAuthority(Long id) {
+		if (!this.id.equals(id)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+		}
+	}
+
+	public void update(MemberUpdateReqDto req) {
+		nickname = req.nickname();
+	}
+
+	public void delete() {
+		deletedAt = LocalDateTime.now();
+	}
 }
