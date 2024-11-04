@@ -26,7 +26,7 @@ public class Oauth2Controller {
 		@PathVariable String provider,
 		@RequestParam String code
 	) throws JsonProcessingException {
-		LoginResDto response = oauth2Service.login(provider, code);
+		LoginResDto response = oauth2Service.loginOrRegisterWithOauth(provider, code);
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(response);
