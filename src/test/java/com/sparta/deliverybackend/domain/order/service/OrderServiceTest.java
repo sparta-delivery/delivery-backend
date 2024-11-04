@@ -21,7 +21,6 @@ import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderMenuDto;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderResponseDto;
 import com.sparta.deliverybackend.domain.order.entity.Order;
-import com.sparta.deliverybackend.domain.order.entity.OrderMenu;
 import com.sparta.deliverybackend.domain.order.entity.OrderStatus;
 import com.sparta.deliverybackend.domain.order.repository.OrderMenuRepository;
 import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
@@ -89,7 +88,7 @@ class OrderServiceTest {
 			.build();
 
 		when(orderRepository.save(any(Order.class))).thenReturn(order);
-		when(orderMenuRepository.save(any(OrderMenu.class))).thenAnswer(invocation -> invocation.getArgument(0));
+		when(orderMenuRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// when
 		OrderResponseDto orderResponseDto = orderService.createOrder(new VerifiedMember(memberId),
