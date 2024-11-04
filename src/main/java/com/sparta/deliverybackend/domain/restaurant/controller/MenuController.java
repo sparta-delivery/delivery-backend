@@ -38,8 +38,8 @@ public class MenuController {
 	// 메뉴 수정
 	@PatchMapping("/{restaurantId}/menus/{menuId}")
 	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId,	@PathVariable Long menuId,
-		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto){
-		menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto);
+		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto, VerifiedMember verifiedMember){
+		menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
@@ -47,12 +47,10 @@ public class MenuController {
 
 	// 메뉴 삭제
 	@DeleteMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
-		menuService.deleteMenu(restaurantId, menuId);
+	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId, VerifiedMember verifiedMember){
+		menuService.deleteMenu(restaurantId, menuId, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
 	}
-
-
 }
