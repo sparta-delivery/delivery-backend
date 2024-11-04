@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateRequestDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuResponseDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateRequestDto;
+import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.service.MenuService;
 
 import jakarta.validation.Valid;
@@ -27,17 +28,18 @@ public class MenuController {
 
 	// 메뉴 생성
 	@PostMapping()
-	public ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuCreateRequestDto menuCreateRequestDto){
+	public ResponseEntity<MenuRespDto> createMenu(@RequestBody MenuCreateReqDto menuCreateReqDto, VerifiedMember verifiedMember){
+		MenuRespDto menuRespDto = menuService.createMenu(menuCreateReqDto, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
-			.body(menuService.createMenu(menuCreateRequestDto));
+			.body(menuRespDto);
 	}
 
 	// 메뉴 수정
 	@PatchMapping("/{restaurantId}/menus/{menuId}")
 	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId,	@PathVariable Long menuId,
-		@RequestBody @Valid MenuUpdateRequestDto menuUpdateRequestDto){
-		menuService.updateMenu(restaurantId, menuId, menuUpdateRequestDto);
+		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto){
+		menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
@@ -45,8 +47,7 @@ public class MenuController {
 
 	// 메뉴 삭제
 	@DeleteMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId,
-		@PathVariable Long menuId){
+	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
 		menuService.deleteMenu(restaurantId, menuId);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)

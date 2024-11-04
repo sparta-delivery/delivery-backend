@@ -1,8 +1,8 @@
 package com.sparta.deliverybackend.domain.restaurant.entity;
 
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateRequestDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuResponseDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,28 +54,28 @@ public class Menu extends BaseTimeStampEntity {
 	@Column(name = "is_deleted")
 	private boolean deleted = false;
 
-	public static Menu from(MenuCreateRequestDto menuCreateRequestDto) {
+	public static Menu from(MenuCreateReqDto menuCreateReqDto) {
 		Menu menu = new Menu();
-		menu.initData(menuCreateRequestDto);
+		menu.initData(menuCreateReqDto);
 		return menu;
 	}
 
-	private void initData(MenuCreateRequestDto menuCreateRequestDto) {
-		this.name = menuCreateRequestDto.getName();
+	private void initData(MenuCreateReqDto menuCreateReqDto) {
+		this.name = menuCreateReqDto.getName();
 
 		try{
-			this.cuisineType = CuisineType.valueOf(menuCreateRequestDto.getCuisineType());
+			this.cuisineType = CuisineType.valueOf(menuCreateReqDto.getCuisineType());
 		} catch(IllegalArgumentException e){
-			throw new IllegalArgumentException("음식 타입이 설정되지 않았습니다.: " + menuCreateRequestDto.getCuisineType());
+			throw new IllegalArgumentException("음식 타입이 설정되지 않았습니다.: " + menuCreateReqDto.getCuisineType());
 		}
 
-		this.price = menuCreateRequestDto.getPrice();
-		this.description = menuCreateRequestDto.getDescription();
-		this.restaurant = new Restaurant(menuCreateRequestDto.getRestaurantId());
+		this.price = menuCreateReqDto.getPrice();
+		this.description = menuCreateReqDto.getDescription();
+		this.restaurant = new Restaurant(menuCreateReqDto.getRestaurantId());
 	}
 
-	public MenuResponseDto to() {
-		return MenuResponseDto.builder()
+	public MenuRespDto to() {
+		return MenuRespDto.builder()
 			.id(this.id)
 			.name(this.name)
 			.price(this.price)

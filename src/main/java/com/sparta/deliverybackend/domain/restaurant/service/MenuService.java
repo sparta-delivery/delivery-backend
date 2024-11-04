@@ -3,9 +3,10 @@ package com.sparta.deliverybackend.domain.restaurant.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateRequestDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuResponseDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateRequestDto;
+import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
@@ -23,13 +24,13 @@ public class MenuService {
 	private final MenuRepository menuRepository;
 
 	@Transactional
-	public MenuResponseDto createMenu(MenuCreateRequestDto menuCreateRequestDto) {
-		Menu menu = menuRepository.save(Menu.from(menuCreateRequestDto));
+	public MenuRespDto createMenu(MenuCreateReqDto menuCreateReqDto, VerifiedMember verifiedMember) {
+		Menu menu = menuRepository.save(Menu.from(menuCreateReqDto));
 		return menu.to();
 	}
 
 	@Transactional
-	public void updateMenu(Long restaurantId, Long menuId, MenuUpdateRequestDto menuUpdateRequestDto) {
+	public void updateMenu(Long restaurantId, Long menuId, MenuUpdateReqDto menuUpdateReqDto) {
 		Restaurant restaurant = restaurantRepository.findById(restaurantId)
 			.orElseThrow(() -> new EntityNotFoundException("가게를 찾을 수 없습니다."));
 
@@ -40,10 +41,10 @@ public class MenuService {
 			throw new IllegalArgumentException("해당 가게의 메뉴가 아닙니다. 다시 확인해주세요");
 		}
 
-		menu.setName(menuUpdateRequestDto.getName());
-		menu.setPrice(menuUpdateRequestDto.getPrice());
-		menu.setDescription(menuUpdateRequestDto.getDescription());
-		menu.setCuisineType(CuisineType.valueOf(menuUpdateRequestDto.getCuisineType()));
+		menu.setName(menuUpdateReqDto.getName());
+		menu.setPrice(menuUpdateReqDto.getPrice());
+		menu.setDescription(menuUpdateReqDto.getDescription());
+		menu.setCuisineType(CuisineType.valueOf(menuUpdateReqDto.getCuisineType()));
 
 		menuRepository.save(menu);
 	}
