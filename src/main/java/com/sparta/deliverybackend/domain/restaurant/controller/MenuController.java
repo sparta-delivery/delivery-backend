@@ -3,7 +3,6 @@ package com.sparta.deliverybackend.domain.restaurant.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +15,12 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuResponseD
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateRequestDto;
 import com.sparta.deliverybackend.domain.restaurant.service.MenuService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/restaurant")
+@RequestMapping("/api/menu")
 public class MenuController {
 
 	private final MenuService menuService;
@@ -35,9 +35,9 @@ public class MenuController {
 
 	// 메뉴 수정
 	@PatchMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId,
-		@PathVariable Long menuId, @RequestBody MenuUpdateRequestDto menuUpdateRequestDto){
-		menuService.updateMenu(restaurantId, menuId);
+	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId,	@PathVariable Long menuId,
+		@RequestBody @Valid MenuUpdateRequestDto menuUpdateRequestDto){
+		menuService.updateMenu(restaurantId, menuId, menuUpdateRequestDto);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
