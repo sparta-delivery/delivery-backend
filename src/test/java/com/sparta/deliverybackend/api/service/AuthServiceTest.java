@@ -12,9 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.sparta.deliverybackend.api.controller.dto.LoginReqDto;
-import com.sparta.deliverybackend.api.controller.dto.LoginResDto;
-import com.sparta.deliverybackend.api.controller.dto.RegisterReqDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginReqDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginResDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.RegisterReqDto;
+import com.sparta.deliverybackend.api.auth.service.AuthService;
 import com.sparta.deliverybackend.common.JwtHelper;
 import com.sparta.deliverybackend.domain.member.entity.JoinPath;
 import com.sparta.deliverybackend.domain.member.entity.Member;

@@ -2,7 +2,7 @@ package com.sparta.deliverybackend.domain.member.service;
 
 import org.springframework.stereotype.Service;
 
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.controller.dto.MemberUpdateReqDto;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
