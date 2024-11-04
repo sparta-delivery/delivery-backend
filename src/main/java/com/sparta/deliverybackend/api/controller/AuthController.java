@@ -31,8 +31,9 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResDto> login(@RequestBody LoginReqDto req) {
+		LoginResDto response = authService.login(req);
 		return ResponseEntity
 			.status(HttpStatus.OK)
-			.body(authService.login(req));
+			.body(response);
 	}
 }
