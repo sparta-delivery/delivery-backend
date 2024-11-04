@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class RestaurantCreateRepDto {
+    private Long id;
     private String name;
     private String openTime;
     private String closeTime;
@@ -16,6 +17,7 @@ public class RestaurantCreateRepDto {
     private Long managerId;
 
     public RestaurantCreateRepDto(Restaurant restaurant) {
+        this.id = restaurant.getId();
         this.name = restaurant.getName();
         this.openTime = restaurant.getOpenTime();
         this.closeTime = restaurant.getCloseTime();
