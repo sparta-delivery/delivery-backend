@@ -1,5 +1,6 @@
 package com.sparta.deliverybackend.domain.restaurant.service;
 
+import com.sparta.deliverybackend.api.config.s3.S3Service;
 import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
@@ -12,14 +13,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final ManagerRepository managerRepository;
+    private final S3Service s3Service;
 
-    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember) {//로그인 유저로 바꿀 예정
+    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {//로그인 유저로 바꿀 예정
+        String url = s3Service.uploadImage(profileImg);
+
         Manager manager = managerRepository.findById(verifiedMember.id())
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 

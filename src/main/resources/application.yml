@@ -1,0 +1,18 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+cloud:
+  aws:
+    s3:
+      bucket: mydeliveryimage
+    region:
+      static: ap-northeast-1
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: AKIARHQBNVCE2WKUOKOC
+      secret-key: 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
