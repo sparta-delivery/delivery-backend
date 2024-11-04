@@ -12,6 +12,7 @@ public class DeliveryBackendApplication {
 	}
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(DeliveryBackendApplication.class, args);
 	}
 
