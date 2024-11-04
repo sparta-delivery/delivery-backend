@@ -54,16 +54,17 @@ public class OrderService {
 				Menu menu = menuRepository.findById(orderMenuReq.getMenuId())
 					.orElseThrow(
 						() -> new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenuId()));
-				OrderMenu orderMenu = OrderMenu.builder()
+				return OrderMenu.builder()
 					.menu(menu)
 					.order(order)
 					.quantity(orderMenuReq.getQuantity())
 					.build();
-				return orderMenuRepository.save(orderMenu);
 
 			}).toList();
+	
+		List<OrderMenu> savedOrderMenus = orderMenuRepository.saveAll(orderMenus);
 
-		return OrderResponseDto.of(order, orderMenus);
+		return OrderResponseDto.of(order, savedOrderMenus);
 
 	}
 }
