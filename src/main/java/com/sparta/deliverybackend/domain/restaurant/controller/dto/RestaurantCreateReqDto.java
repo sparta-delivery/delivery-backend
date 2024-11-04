@@ -13,13 +13,11 @@ public class RestaurantCreateReqDto {
     private String openTime;
     private String closeTime;
     private int minPrice;
-    private Long managerId;
 
-    public RestaurantCreateReqDto(String name, String openTime, String closeTime, int minPrice, Long managerId){
+    public RestaurantCreateReqDto(String name, String openTime, String closeTime, int minPrice){
         this.name = name;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.minPrice = minPrice;
-        this.managerId = managerId;
     }
 }

@@ -8,6 +8,8 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCre
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class RestaurantService {
     private final ManagerRepository managerRepository;
 
     public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember) {//로그인 유저로 바꿀 예정
-        Manager manager = managerRepository.findById(reqDto.getManagerId())
+        Manager manager = managerRepository.findById(verifiedMember.id())
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
         Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
@@ -27,8 +29,14 @@ public class RestaurantService {
         return new RestaurantCreateRepDto(savedRestaurant);
     }
 
-//    public List<RestaurantCreateRepDto> getRestaurants(VerifiedMember verifiedMember) {
+    public List<RestaurantCreateRepDto> getRestaurants(VerifiedMember verifiedMember) {
+        List<RestaurantCreateRepDto> restaurants = restaurantRepository.findAll().stream().map(RestaurantCreateRepDto::new).toList();
+        return restaurants;
+    }
+
+//    public List<RestaurantCreateRepDto> getRestaurants(int page, int limit, VerifiedMember verifiedMember) {
+//        PageRequest pageRequest = PageRequest.of(page, limit);
+//        Page<Restaurant> restaurants = restaurantRepository.findAll(pageRequest);
 //
-//        return
 //    }
 }
