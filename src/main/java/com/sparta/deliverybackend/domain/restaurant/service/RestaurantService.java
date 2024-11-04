@@ -10,9 +10,11 @@ import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantReposit
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +31,15 @@ public class RestaurantService {
         return new RestaurantCreateRepDto(savedRestaurant);
     }
 
-    public List<RestaurantCreateRepDto> getRestaurants(VerifiedMember verifiedMember) {
-        List<RestaurantCreateRepDto> restaurants = restaurantRepository.findAll().stream().map(RestaurantCreateRepDto::new).toList();
-        return restaurants;
-    }
-
-//    public List<RestaurantCreateRepDto> getRestaurants(int page, int limit, VerifiedMember verifiedMember) {
-//        PageRequest pageRequest = PageRequest.of(page, limit);
-//        Page<Restaurant> restaurants = restaurantRepository.findAll(pageRequest);
-//
+//    public List<RestaurantCreateRepDto> getRestaurants(VerifiedMember verifiedMember) {
+//        List<RestaurantCreateRepDto> restaurants = restaurantRepository.findAll().stream().map(RestaurantCreateRepDto::new).toList();
+//        return restaurants;
 //    }
+
+    public Page<RestaurantCreateRepDto> getRestaurants(int page, int limit, VerifiedMember verifiedMember) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
+
+        return restaurants.map(RestaurantCreateRepDto::new);
+    }
 }
