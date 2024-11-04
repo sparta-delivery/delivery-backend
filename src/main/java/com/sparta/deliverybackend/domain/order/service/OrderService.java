@@ -34,6 +34,10 @@ public class OrderService {
 	@Transactional
 	public OrderResponseDto createOrder(VerifiedMember verifiedMember, List<OrderMenuDto> orderMenuReqs) {
 
+		if (orderMenuReqs == null || orderMenuReqs.isEmpty()) {
+			throw new IllegalArgumentException("주문 메뉴가 없습니다.");
+		}
+
 		Member member = memberRepository.findById(verifiedMember.id())
 			.orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
