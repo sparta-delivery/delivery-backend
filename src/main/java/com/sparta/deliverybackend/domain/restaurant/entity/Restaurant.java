@@ -13,10 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -24,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class Restaurant extends BaseTimeStampEntity {
 
 	@Id
@@ -57,7 +55,15 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.manager = managerId;
 	}
 
-	public Restaurant(Long restaurantId) {
-		this.id = restaurantId;
+	public void modify(String name, String openTime, String closeTime, int minPrice, Manager managerId){
+		this.name = name;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.minPrice = minPrice;
+		this.manager = managerId;
+	}
+
+	public void delete(){
+		this.deletedAt = LocalDateTime.now();
 	}
 }
