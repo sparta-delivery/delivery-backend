@@ -58,4 +58,8 @@ public class Member extends BaseTimeStampEntity {
 	public void update(MemberUpdateReqDto req) {
 		nickname = req.nickname();
 	}
+
+	public void delete() {
+		deletedAt = LocalDateTime.now();
+	}
 }
