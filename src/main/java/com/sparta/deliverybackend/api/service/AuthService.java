@@ -36,7 +36,7 @@ public class AuthService {
 	public LoginResDto login(LoginReqDto req) {
 		Member member = memberRepository.findByEmail(req.email())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-		if (passwordEncoder.matches(req.password(), member.getPassword())) {
+		if (!passwordEncoder.matches(req.password(), member.getPassword())) {
 			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 		}
 		String accessToken = jwtHelper.generateAccessToken(member);
