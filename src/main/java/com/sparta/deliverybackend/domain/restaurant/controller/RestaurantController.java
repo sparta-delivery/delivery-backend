@@ -6,11 +6,12 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCre
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -28,12 +29,15 @@ public class RestaurantController {
                 .body(response);
     }
 
-//    @GetMapping("/restaurant")
-//    public ResponseEntity<List<RestaurantCreateRepDto>> getRestaurants(VerifiedMember verifiedMember){
-//        List<RestaurantCreateRepDto> response = restaurantService.getRestaurants(verifiedMember);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(response);
-//    }
+    @GetMapping("/restaurant")
+    public ResponseEntity<Page<RestaurantCreateRepDto>> getRestaurants(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            VerifiedMember verifiedMember){
+        Page<RestaurantCreateRepDto> response = restaurantService.getRestaurants(page, limit, verifiedMember);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
 
 }
