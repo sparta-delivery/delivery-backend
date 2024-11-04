@@ -10,12 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "manager")
 @Builder
@@ -39,4 +37,5 @@ public class Manager extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private JoinPath joinPath;
+
 }
