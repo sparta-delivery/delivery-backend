@@ -3,10 +3,7 @@ package com.sparta.deliverybackend.domain.restaurant.service;
 import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateRepDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateRepDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +48,16 @@ public class RestaurantService {
 
         restaurant.modify(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
         return new RestaurantUpdateRepDto(restaurant);
+    }
+
+    @Transactional
+    public RestaurantDeleteRepDto deleteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+
+        restaurant.delete();
+
+        restaurantRepository.save(restaurant);
+        return new RestaurantDeleteRepDto(restaurant);
     }
 }

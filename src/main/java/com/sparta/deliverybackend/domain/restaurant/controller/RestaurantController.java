@@ -2,10 +2,7 @@ package com.sparta.deliverybackend.domain.restaurant.controller;
 
 import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateRepDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateRepDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,6 +52,11 @@ public class RestaurantController {
                 .body(response);
     }
 
-//    @DeleteMapping("/restaurant/{restaurantId}")
-//    public ResponseEntity<>
+    @DeleteMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<RestaurantDeleteRepDto> deleteRestaurant(@PathVariable Long restaurantId, VerifiedMember verifiedMember){
+        RestaurantDeleteRepDto response = restaurantService.deleteRestaurant(restaurantId, verifiedMember);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
 }

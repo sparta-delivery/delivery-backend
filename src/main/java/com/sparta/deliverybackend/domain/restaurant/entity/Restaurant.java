@@ -62,4 +62,8 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.minPrice = minPrice;
 		this.manager = managerId;
 	}
+
+	public void delete(){
+		this.deletedAt = LocalDateTime.now();
+	}
 }
