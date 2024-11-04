@@ -8,17 +8,21 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCre
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final ManagerRepository managerRepository;
+    private final OrderedFormContentFilter formContentFilter;
 
     public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember) {//로그인 유저로 바꿀 예정
         Manager manager = managerRepository.findById(verifiedMember.id())
@@ -29,14 +33,8 @@ public class RestaurantService {
         return new RestaurantCreateRepDto(savedRestaurant);
     }
 
-    public List<RestaurantCreateRepDto> getRestaurants(VerifiedMember verifiedMember) {
-        List<RestaurantCreateRepDto> restaurants = restaurantRepository.findAll().stream().map(RestaurantCreateRepDto::new).toList();
-        return restaurants;
+    public Page<RestaurantCreateRepDto> getRestaurants(Pageable pageable, VerifiedMember verifiedMember) {
+        return restaurantRepository.findAll(pageable)
+                .map(RestaurantCreateRepDto::new);
     }
-
-//    public List<RestaurantCreateRepDto> getRestaurants(int page, int limit, VerifiedMember verifiedMember) {
-//        PageRequest pageRequest = PageRequest.of(page, limit);
-//        Page<Restaurant> restaurants = restaurantRepository.findAll(pageRequest);
-//
-//    }
 }
