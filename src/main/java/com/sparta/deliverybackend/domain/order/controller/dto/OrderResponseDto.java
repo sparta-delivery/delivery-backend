@@ -30,27 +30,24 @@ public class OrderResponseDto {
 
 	public static OrderResponseDto of(Order order, List<OrderMenu> orderMenus) {
 
-		// OrderMenuDto 리스트 생성
-		List<OrderMenuDto> deliveryMenus = orderMenus.stream()
-			.map(menu -> OrderMenuDto.builder()
-				.menu(menu.getMenu())
-				.quantity(menu.getQuantity())
+		Long totalPrice = orderMenus.stream()
+			.map(orderMenu -> orderMenu.getMenu().getPrice() * orderMenu.getQuantity())
+			.reduce(0L, Long::sum);
+
+		List<OrderMenuDto> requestMenus = orderMenus.stream()
+			.map(orderMenu -> OrderMenuDto.builder()
+				.menuId(orderMenu.getMenu().getId())
+				.quantity(orderMenu.getQuantity())
 				.build())
 			.toList();
 
-		// 총액 계산
-		long totalPrice = deliveryMenus.stream()
-			.mapToLong(menu -> menu.getMenu().getPrice() * menu.getQuantity())
-			.sum();
-
 		return OrderResponseDto.builder()
 			.customer(order.getMember().getNickname())
-			.restaurantName(deliveryMenus.get(0).getMenu().getRestaurant().getName())
-			.requestMenus(deliveryMenus)
+			.restaurantName(orderMenus.get(0).getMenu().getRestaurant().getName())
+			.requestMenus(requestMenus)
 			.totalPrice(totalPrice)
 			.orderStatus(order.getOrderStatus())
 			.build();
-
 	}
 
 }

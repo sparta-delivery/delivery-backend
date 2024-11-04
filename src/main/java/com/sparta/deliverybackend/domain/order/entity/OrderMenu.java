@@ -28,7 +28,7 @@ public class OrderMenu {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long quantity;
+	private Long quantity; // 추가됨
 
 	@ManyToOne
 	@JoinColumn(name = "menu_id")
