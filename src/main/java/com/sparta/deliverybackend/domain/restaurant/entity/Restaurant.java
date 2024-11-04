@@ -56,4 +56,8 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.minPrice = minPrice;
 		this.manager = managerId;
 	}
+
+	public Restaurant(Long restaurantId) {
+		this.id = restaurantId;
+	}
 }
