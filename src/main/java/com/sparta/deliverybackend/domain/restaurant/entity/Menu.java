@@ -1,6 +1,7 @@
 package com.sparta.deliverybackend.domain.restaurant.entity;
 
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
+import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 
@@ -54,24 +55,25 @@ public class Menu extends BaseTimeStampEntity {
 	@Column(name = "is_deleted")
 	private boolean deleted = false;
 
-	public static Menu from(MenuCreateReqDto menuCreateReqDto) {
-		Menu menu = new Menu();
-		menu.initData(menuCreateReqDto);
-		return menu;
+	public static Menu from(MenuCreateReqDto menuCreateReqDto, Restaurant restaurant, Manager manager) {
+		return Menu.builder()
+			.name(menuCreateReqDto.getName())
+			.price(menuCreateReqDto.getPrice())
+			.description(menuCreateReqDto.getDescription())
+			.cuisineType(CuisineType.valueOf(menuCreateReqDto.getCuisineType()))
+			.restaurant(restaurant)
+			.build();
 	}
 
-	private void initData(MenuCreateReqDto menuCreateReqDto) {
-		this.name = menuCreateReqDto.getName();
+	public void isUpdated(String name, Integer price, String description, CuisineType cuisineType) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+		this.cuisineType = cuisineType;
+	}
 
-		try{
-			this.cuisineType = CuisineType.valueOf(menuCreateReqDto.getCuisineType());
-		} catch(IllegalArgumentException e){
-			throw new IllegalArgumentException("음식 타입이 설정되지 않았습니다.: " + menuCreateReqDto.getCuisineType());
-		}
-
-		this.price = menuCreateReqDto.getPrice();
-		this.description = menuCreateReqDto.getDescription();
-		this.restaurant = new Restaurant(menuCreateReqDto.getRestaurantId());
+	public void isDeleted(){
+		this.deleted = true;
 	}
 
 	public MenuRespDto to() {
