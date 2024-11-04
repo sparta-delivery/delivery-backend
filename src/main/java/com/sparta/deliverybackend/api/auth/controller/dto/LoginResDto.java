@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.controller.dto;
+package com.sparta.deliverybackend.api.auth.controller.dto;
 
 public record LoginResDto(String accessToken) {
 }
