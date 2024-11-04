@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MenuCreateRequestDto {
+public class MenuCreateReqDto {
 
 	private String name;
 	private String cuisineType;

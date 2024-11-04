@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class MenuResponseDto {
+public class MenuRespDto {
 
 	private Long id;
 	private String name;
