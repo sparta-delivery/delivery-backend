@@ -39,4 +39,5 @@ public class Manager extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private JoinPath joinPath;
+
 }
