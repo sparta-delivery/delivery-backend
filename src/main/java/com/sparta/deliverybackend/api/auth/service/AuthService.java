@@ -1,10 +1,10 @@
-package com.sparta.deliverybackend.api.service;
+package com.sparta.deliverybackend.api.auth.service;
 
 import org.springframework.stereotype.Service;
 
-import com.sparta.deliverybackend.api.controller.dto.LoginReqDto;
-import com.sparta.deliverybackend.api.controller.dto.LoginResDto;
-import com.sparta.deliverybackend.api.controller.dto.RegisterReqDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginReqDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginResDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.RegisterReqDto;
 import com.sparta.deliverybackend.common.JwtHelper;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
