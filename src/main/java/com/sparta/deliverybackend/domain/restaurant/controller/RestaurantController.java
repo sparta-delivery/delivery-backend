@@ -8,11 +8,15 @@ import com.sparta.deliverybackend.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,13 +35,13 @@ public class RestaurantController {
 
     @GetMapping("/restaurant")
     public ResponseEntity<Page<RestaurantCreateRepDto>> getRestaurants(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit,
-            VerifiedMember verifiedMember){
-        Page<RestaurantCreateRepDto> response = restaurantService.getRestaurants(page, limit, verifiedMember);
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            VerifiedMember verifiedMember) {
+
+        Page<RestaurantCreateRepDto> response = restaurantService.getRestaurants(pageable, verifiedMember);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
-
 }
