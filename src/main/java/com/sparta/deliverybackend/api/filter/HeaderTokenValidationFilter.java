@@ -27,9 +27,6 @@ public class HeaderTokenValidationFilter extends OncePerRequestFilter {
 			chain.doFilter(req, res);
 			return;
 		}
-		System.out.println("=====================================");
-		System.out.println(req.getRequestURI());
-		System.out.println("=====================================");
 		String accessToken = Optional.ofNullable(req.getHeader("Authorization"))
 			.map(header -> header.substring("Bearer ".length()))
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "토큰이 없습니다."));
