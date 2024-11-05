@@ -2,6 +2,7 @@ package com.sparta.deliverybackend.api.oauth2.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpEntity;
@@ -28,6 +29,7 @@ import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
 import com.sparta.deliverybackend.global.security.PasswordEncoder;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,7 +42,8 @@ public class Oauth2Service {
 	private final InMemoryProviderRepository inMemoryProviderRepository;
 	private final RestTemplate restTemplate;
 
-	public LoginResDto loginOrRegisterWithOauth(String providerName, String code) throws
+	@Transactional
+	public LoginResDto loginOrRegister(String providerName, String code) throws
 		JsonProcessingException {
 		Oauth2Provider provider = inMemoryProviderRepository.findProvider(providerName);
 		String oauthAccessToken = getToken(code, provider);
@@ -66,7 +69,6 @@ public class Oauth2Service {
 		Member member = memberRepository.findByEmail(memberProfile.getEmail())
 			.orElseThrow(() -> new IllegalArgumentException("가입된 유저를 찾을 수 없습니다."));
 		String accessToken = jwtHelper.generateAccessToken(member);
-		System.out.println(member.getId());
 		return new LoginResDto(accessToken);
 	}
 
@@ -79,6 +81,7 @@ public class Oauth2Service {
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("code", code);
+		body.add("client_id", provider.getClientId());
 		body.add("grant_type", "authorization_code");
 		body.add("redirect_uri", provider.getRedirectUrl());
 
@@ -92,16 +95,22 @@ public class Oauth2Service {
 		return jsonNode.get("access_token").asText();
 	}
 
-	private OauthMemberProfile getMemberProfile(String accessToken, String providerName, Oauth2Provider provider) throws
-		JsonProcessingException {
+	private OauthMemberProfile getMemberProfile(
+		String accessToken,
+		String providerName,
+		Oauth2Provider provider
+	) throws JsonProcessingException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(accessToken);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		HttpEntity<String> requestHeader = new HttpEntity<>("", headers);
-		ResponseEntity<String> response = restTemplate.exchange(provider.getUserInfoUrl(), HttpMethod.GET,
+		ResponseEntity<String> response = restTemplate.exchange(
+			provider.getUserInfoUrl(),
+			HttpMethod.GET,
 			requestHeader,
 			String.class);
-		JsonNode jsonResponseBody = new ObjectMapper().readTree(response.getBody());
-		return Oauth2Attributes.extract(providerName, jsonResponseBody);
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> attributes = mapper.readValue(response.getBody(), Map.class);
+		return Oauth2Attributes.extract(providerName, attributes);
 	}
 }
