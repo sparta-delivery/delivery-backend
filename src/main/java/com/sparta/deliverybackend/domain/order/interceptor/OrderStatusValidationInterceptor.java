@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderRequestDto;
 import com.sparta.deliverybackend.domain.order.entity.Order;
 import com.sparta.deliverybackend.domain.order.entity.OrderStatus;
-import com.sparta.deliverybackend.domain.order.repository.OrderMenuRepository;
 import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class OrderStatusValidationInterceptor implements HandlerInterceptor {
 
 	private final OrderRepository orderRepository;
-	private final OrderMenuRepository orderMenuRepository;
 	private final RestaurantRepository restaurantRepository;
 	private final MenuRepository menuRepository;
 	private final ObjectMapper objectMapper;
@@ -79,7 +77,7 @@ public class OrderStatusValidationInterceptor implements HandlerInterceptor {
 				// 현재 시간이 영업시간 내인지 확인합니다.
 				if (now.isBefore(openTime) || now.isAfter(closeTime)) {
 					res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					res.getWriter().write("Order can be purposed in open time" + now);
+					res.getWriter().write("Order can be purposed in open time");
 					return false;
 				}
 			}
