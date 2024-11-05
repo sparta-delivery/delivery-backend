@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import com.sparta.deliverybackend.api.oauth2.adapter.Oauth2Adapter;
-import com.sparta.deliverybackend.api.oauth2.provider.Oauth2Provider;
-import com.sparta.deliverybackend.api.oauth2.service.OauthClientService;
-import com.sparta.deliverybackend.api.oauth2.service.RestTemplateOauthClientService;
+import com.sparta.deliverybackend.api.oauth2.provider.Oauth2ProviderProperties;
+import com.sparta.deliverybackend.api.oauth2.service.Oauth2ClientService;
+import com.sparta.deliverybackend.api.oauth2.service.Oauth2ProviderType;
+import com.sparta.deliverybackend.api.oauth2.service.RestTemplateOauth2ClientService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,16 +22,16 @@ public class Oauth2Config {
 
 	private final Oauth2Properties properties;
 	private final RestTemplate restTemplate;
-	private final OauthClientService oauthClientService;
+	private final Oauth2ClientService oauthClientService;
 
 	@Bean
 	public InMemoryProviderRepository inMemoryProviderRepository() {
-		Map<String, Oauth2Provider> providers = Oauth2Adapter.getOauth2Provider(properties);
+		Map<Oauth2ProviderType, Oauth2ProviderProperties> providers = Oauth2Adapter.getOauth2Provider(properties);
 		return new InMemoryProviderRepository(providers);
 	}
 
 	@Bean
-	public OauthClientService oauthClientService() {
-		return new RestTemplateOauthClientService(restTemplate);
+	public Oauth2ClientService oauthClientService() {
+		return new RestTemplateOauth2ClientService(restTemplate);
 	}
 }
