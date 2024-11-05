@@ -34,10 +34,13 @@ class OrderServiceTest {
 
 	@Mock
 	private OrderRepository orderRepository;
+
 	@Mock
 	private OrderMenuRepository orderMenuRepository;
+
 	@Mock
 	private MenuRepository menuRepository;
+
 	@Mock
 	private MemberRepository memberRepository;
 
@@ -48,19 +51,22 @@ class OrderServiceTest {
 	@DisplayName("회원 배달 주문 시 주문 생성 테스트")
 	void createOrderTest() {
 		// given
+		Long memberId = 1L;
 
 		// 임시 멤버 객체 생성
-		Long memberId = 1L;
 		Member member = Member.builder()
 			.id(memberId)
 			.nickname("태우")
 			.email("wootaepark@naver.com")
 			.password("1234")
-			.joinPath(JoinPath.OAUTH)
+			.joinPath(JoinPath.BASIC)
 			.build();
 
 		// 임시 식당 객체 생성
-		Restaurant restaurant = Restaurant.builder().id(1L).build();
+		Restaurant restaurant = Restaurant.builder()
+			.id(1L)
+			.minPrice(15000) // 최소 주문 금액 설정
+			.build();
 
 		// 임시 메뉴 객체 생성
 		Menu menu = Menu.builder()
@@ -70,15 +76,17 @@ class OrderServiceTest {
 			.cuisineType(CuisineType.KOREAN)
 			.restaurant(restaurant)
 			.price(10000)
+			.deleted(false)
 			.build();
 
 		OrderMenuDto orderMenuDto = OrderMenuDto.builder()
-			.menuId(1L)
+			.menuId(menu.getId())
 			.quantity(2L)
 			.build();
 
+		// Mocking
 		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-		when(menuRepository.findById(orderMenuDto.getMenuId())).thenReturn(Optional.of(menu));
+		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu));
 
 		Order order = Order.builder()
 			.id(1L)
@@ -91,14 +99,138 @@ class OrderServiceTest {
 		when(orderMenuRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// when
-		OrderResponseDto orderResponseDto = orderService.createOrder(new VerifiedMember(memberId),
+		OrderResponseDto orderResponseDto = orderService.createOrder(new VerifiedMember(1L),
 			List.of(orderMenuDto));
 
 		// then
 		assertNotNull(orderResponseDto);
 		assertEquals("태우", orderResponseDto.getCustomer());
-		assertEquals(1L, orderResponseDto.getRequestMenus().get(0).getMenuId());
+		assertEquals(menu.getId(), orderResponseDto.getRequestMenus().get(0).getMenuId());
 		assertEquals(2L, orderResponseDto.getRequestMenus().get(0).getQuantity());
 		assertEquals(OrderStatus.WAIT, orderResponseDto.getOrderStatus());
+	}
+
+	@Test
+	@DisplayName("주문 생성 시 메뉴가 없을 경우 예외 발생 테스트")
+	void createOrder_NoMenus() {
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> {
+			orderService.createOrder(new VerifiedMember(1L), null);
+		});
+	}
+
+	@Test
+	@DisplayName("주문 생성 시 최소 주문 금액 미달 예외 발생 테스트")
+	void createOrder_MinimumAmountNotMet() {
+		// given
+		Long memberId = 1L;
+
+		// 임시 멤버 객체 생성
+		Member member = Member.builder()
+			.id(memberId)
+			.nickname("태우")
+			.email("wootaepark@naver.com")
+			.password("1234")
+			.joinPath(JoinPath.OAUTH)
+			.build();
+
+		// 임시 식당 객체 생성
+		Restaurant restaurant = Restaurant.builder()
+			.id(1L)
+			.minPrice(15000) // 최소 주문 금액 설정
+			.build();
+
+		// 임시 메뉴 객체 생성
+		Menu menu = Menu.builder()
+			.id(1L)
+			.name("떡볶이")
+			.description("맛있어요")
+			.cuisineType(CuisineType.KOREAN)
+			.restaurant(restaurant)
+			.price(10000)
+			.build();
+
+		OrderMenuDto orderMenuDto = OrderMenuDto.builder()
+			.menuId(menu.getId())
+			.quantity(1L) // 총액이 최소 금액 미달
+			.build();
+
+		// Mocking
+		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu));
+
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> {
+			orderService.createOrder(new VerifiedMember(memberId), List.of(orderMenuDto));
+		});
+	}
+
+	@Test
+	@DisplayName("주문 생성 시 동일 식당이 아닐 경우 예외 발생 테스트")
+	void createOrder_DifferentRestaurants() {
+		// given
+		Long memberId = 1L;
+
+		// 임시 멤버 객체 생성
+		Member member = Member.builder()
+			.id(memberId)
+			.nickname("태우")
+			.email("wootaepark@naver.com")
+			.password("1234")
+			.joinPath(JoinPath.OAUTH)
+			.build();
+
+		// 임시 식당 객체 생성 (식당 1)
+		Restaurant restaurant1 = Restaurant.builder()
+			.id(1L)
+			.minPrice(15000)
+			.build();
+
+		// 임시 메뉴 객체 생성 (식당 1의 메뉴)
+		Menu menu1 = Menu.builder()
+			.id(1L)
+			.name("떡볶이")
+			.description("맛있어요")
+			.cuisineType(CuisineType.KOREAN)
+			.restaurant(restaurant1)
+			.price(10000)
+			.build();
+
+		// 임시 식당 객체 생성 (식당 2)
+		Restaurant restaurant2 = Restaurant.builder()
+			.id(2L)
+			.minPrice(15000)
+			.build();
+
+		// 임시 메뉴 객체 생성 (식당 2의 메뉴)
+		Menu menu2 = Menu.builder()
+			.id(2L)
+			.name("김밥")
+			.description("맛있어요")
+			.cuisineType(CuisineType.KOREAN)
+			.restaurant(restaurant2)
+			.price(8000)
+			.build();
+
+		// 주문 메뉴 DTO 생성 (식당 1의 메뉴와 식당 2의 메뉴 포함)
+		OrderMenuDto orderMenuDto1 = OrderMenuDto.builder()
+			.menuId(menu1.getId())
+			.quantity(1L)
+			.build();
+
+		OrderMenuDto orderMenuDto2 = OrderMenuDto.builder()
+			.menuId(menu2.getId())
+			.quantity(1L)
+			.build();
+
+		// Mocking
+		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu1));
+		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu2));
+
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> {
+			orderService.createOrder(new VerifiedMember(memberId), List.of(orderMenuDto1, orderMenuDto2));
+		});
 	}
 }
