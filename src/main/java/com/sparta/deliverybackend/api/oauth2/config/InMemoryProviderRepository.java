@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.oauth2.repository;
+package com.sparta.deliverybackend.api.oauth2.config;
 
 import java.util.HashMap;
 import java.util.Map;
