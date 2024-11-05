@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.config.s3;
+package com.sparta.deliverybackend.api.s3.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
