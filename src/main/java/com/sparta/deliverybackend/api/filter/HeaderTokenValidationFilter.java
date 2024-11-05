@@ -37,6 +37,7 @@ public class HeaderTokenValidationFilter extends OncePerRequestFilter {
 		return req.getRequestURI().startsWith("/api/auth") ||
 			req.getRequestURI().startsWith("/api/oauth2") ||
 			req.getRequestURI().startsWith("/error") ||
+			req.getRequestURI().startsWith("/oauth2") ||
 			req.getRequestURI().startsWith("/favicon");
 	}
 }

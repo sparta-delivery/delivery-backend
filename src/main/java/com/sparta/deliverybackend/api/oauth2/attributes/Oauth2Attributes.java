@@ -10,7 +10,7 @@ public enum Oauth2Attributes {
 		@Override
 		public OauthMemberProfile of(Map<String, Object> attributes) {
 			return OauthMemberProfile.builder()
-				.oauthId((String)attributes.get("id"))
+				.oauthId(attributes.get("id").toString())
 				.email((String)attributes.get("email"))
 				.name((String)attributes.get("name"))
 				.build();
@@ -59,9 +59,6 @@ public enum Oauth2Attributes {
 	}
 
 	public static OauthMemberProfile extract(String providerName, Map<String, Object> attributes) {
-		System.out.println("===============================");
-		System.out.println(providerName);
-		System.out.println("===============================");
 		return Arrays.stream(values())
 			.filter(provider -> providerName.equals(provider.providerName))
 			.findFirst()
