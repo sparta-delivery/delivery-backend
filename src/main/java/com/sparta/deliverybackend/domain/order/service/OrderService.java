@@ -115,7 +115,6 @@ public class OrderService {
 
 		order.updateOrderStatus();
 		orderRepository.save(order);
-		// 알람 기능 필요
 
 		return OrderUpdateResponseDto.from(order);
 	}
@@ -144,6 +143,9 @@ public class OrderService {
 
 	// 동일한 식당의 메뉴인지 검증
 	private void validateSameRestaurant(List<Menu> menus) {
+		if (menus.isEmpty()) {
+			throw new IllegalArgumentException("menus 가 비어있습니다.");
+		}
 		Long restaurantId = menus.get(0).getRestaurant().getId();
 		boolean allSameRestaurant = menus.stream()
 			.allMatch(menu -> menu.getRestaurant().getId().equals(restaurantId));
