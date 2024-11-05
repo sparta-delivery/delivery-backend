@@ -1,7 +1,7 @@
 package com.sparta.deliverybackend.domain.restaurant.controller;
 
 import com.sparta.deliverybackend.api.config.s3.S3Service;
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
