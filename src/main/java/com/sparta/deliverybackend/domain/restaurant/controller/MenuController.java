@@ -32,7 +32,8 @@ public class MenuController {
 
 	// 메뉴 생성
 	@PostMapping()
-	public ResponseEntity<MenuRespDto> createMenu(@RequestBody MenuCreateReqDto menuCreateReqDto, VerifiedMember verifiedMember){
+	public ResponseEntity<MenuRespDto> createMenu(@RequestBody MenuCreateReqDto menuCreateReqDto,
+		VerifiedMember verifiedMember) {
 		MenuRespDto menuRespDto = menuService.createMenu(menuCreateReqDto, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
@@ -41,8 +42,8 @@ public class MenuController {
 
 	// 메뉴 수정
 	@PatchMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId,	@PathVariable Long menuId,
-		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto, VerifiedMember verifiedMember){
+	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
+		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto, VerifiedMember verifiedMember) {
 		menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
@@ -51,7 +52,8 @@ public class MenuController {
 
 	// 메뉴 삭제
 	@DeleteMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId, VerifiedMember verifiedMember){
+	public ResponseEntity<Void> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
+		VerifiedMember verifiedMember) {
 		menuService.deleteMenu(restaurantId, menuId, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)

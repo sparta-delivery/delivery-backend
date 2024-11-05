@@ -42,3 +42,7 @@ application-oauth.properties
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+
+.env
+application-ouath.properties
+application.yml
