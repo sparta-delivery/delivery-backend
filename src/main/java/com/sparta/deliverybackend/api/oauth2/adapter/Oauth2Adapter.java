@@ -3,7 +3,7 @@ package com.sparta.deliverybackend.api.oauth2.adapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sparta.deliverybackend.api.config.Oauth2Properties;
+import com.sparta.deliverybackend.api.oauth2.config.Oauth2Properties;
 import com.sparta.deliverybackend.api.oauth2.provider.Oauth2Provider;
 
 public class Oauth2Adapter {
