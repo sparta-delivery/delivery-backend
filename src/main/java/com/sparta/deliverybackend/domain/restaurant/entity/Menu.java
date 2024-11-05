@@ -1,5 +1,6 @@
 package com.sparta.deliverybackend.domain.restaurant.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.text.html.Option;
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
-import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.OptionReqDto;
@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "menu")
 @Builder
@@ -59,9 +58,8 @@ public class Menu extends BaseTimeStampEntity {
 	@JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
 
-	@Setter
-	@Column(name = "is_deleted")
-	private boolean deleted = false;
+	@Column
+	private LocalDateTime deletedAt;
 
 	// JSON 형식으로 저장되는 옵션 컬럼
 	@Column(columnDefinition = "TEXT")
@@ -70,44 +68,35 @@ public class Menu extends BaseTimeStampEntity {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	// 옵션을 JSON 문자열로 직렬화하여 저장
-	public void setOptions(List<Option> optionList) throws JsonProcessingException {
-		this.options = objectMapper.writeValueAsString(optionList);
+	public void setOptions(List<Option> optionList) {
+		try {
+			this.options = objectMapper.writeValueAsString(optionList);
+
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("옵션 직렬화 중 오류가 발생했습니다.", e);
+		}
 	}
 
 	// JSON 문자열을 옵션 객체 리스트로 역직렬화하여 반환
-	public List<OptionReqDto> getOptions() throws JsonProcessingException {
-		return objectMapper.readValue(this.options, new TypeReference<List<OptionReqDto>>() {
-
-		});
+	public List<OptionReqDto> getOptions() {
+		try {
+			return objectMapper.readValue(this.options, new TypeReference<>() {
+			});
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("옵션 직렬화 중 오류가 발생했습니다.", e);
+		}
 	}
 
-	public static Menu from(MenuCreateReqDto menuCreateReqDto, Restaurant restaurant, Manager manager) {
-		return Menu.builder()
-			.name(menuCreateReqDto.getName())
-			.price(menuCreateReqDto.getPrice())
-			.description(menuCreateReqDto.getDescription())
-			.cuisineType(CuisineType.valueOf(menuCreateReqDto.getCuisineType()))
-			.restaurant(restaurant)
-			.build();
-	}
-
-	public void isUpdated(String name, Integer price, String description, CuisineType cuisineType) {
-		this.name = name;
-		this.price = price;
-		this.description = description;
-		this.cuisineType = cuisineType;
-	}
-
-	public void isDeleted(){
-		this.deleted = true;
-	}
-
-	public void updateOptions(List<OptionReqDto> newOptions){
-		try{
+	public void updateOptions(List<OptionReqDto> newOptions) {
+		try {
 			this.options = objectMapper.writeValueAsString(newOptions);
-		} catch (JsonProcessingException e){
+		} catch (JsonProcessingException e) {
 			throw new RuntimeException("옵션 업데이트 중 오류가 발생했습니다.", e);
 		}
+	}
+
+	public void delete(){
+		this.deletedAt = LocalDateTime.now();
 	}
 
 	public MenuRespDto to() {
