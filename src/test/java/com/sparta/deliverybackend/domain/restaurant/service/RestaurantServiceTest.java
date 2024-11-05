@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.sparta.deliverybackend.api.s3.service.S3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpd
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 class RestaurantServiceTest {
 
@@ -44,6 +47,9 @@ class RestaurantServiceTest {
 	private VerifiedMember verifiedMember;
 	private Manager manager;
 
+	@Mock
+	private S3Service s3Service;
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -55,16 +61,34 @@ class RestaurantServiceTest {
 	@Test
 	@DisplayName("가게 생성 테스트")
 	void testCreateRestaurant() {
+		// Given
 		RestaurantCreateReqDto reqDto = new RestaurantCreateReqDto("Test Restaurant", "09:00", "22:00", 1000);
-		when(managerRepository.findById(1L)).thenReturn(Optional.of(manager));
-		when(restaurantRepository.save(any(Restaurant.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-		RestaurantCreateRepDto result = restaurantService.createRestaurant(reqDto, verifiedMember);
+		// Mocking MultipartFile
+		MultipartFile profileImg = new MockMultipartFile("file", "filename.jpg", "image/jpeg", "image content".getBytes());
+
+		// Mock S3Service의 uploadImage 메서드
+		String imageUrl = "https://your-bucket-name.s3.amazonaws.com/uploads/filename.jpg"; // 원하는 URL 설정
+		when(s3Service.uploadImage(profileImg)).thenReturn(imageUrl);
+
+		when(managerRepository.findById(1L)).thenReturn(Optional.of(manager));
+		when(restaurantRepository.countByManagerId(manager.getId())).thenReturn(2L); // 2개의 가게가 이미 존재
+
+		// Restaurant 객체를 생성할 때 imageUrl을 포함
+		Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
+
+		when(restaurantRepository.save(any(Restaurant.class))).thenAnswer(invocation -> {
+			Restaurant savedRestaurant = invocation.getArgument(0);
+			return savedRestaurant;
+		});
+
+		RestaurantCreateRepDto result = restaurantService.createRestaurant(reqDto, verifiedMember, profileImg);
 
 		assertNotNull(result);
 		assertEquals("Test Restaurant", result.getName());
 		verify(restaurantRepository).save(any(Restaurant.class));
 	}
+
 
 	@Test
 	@DisplayName("가게 다건 조회 테스트")
