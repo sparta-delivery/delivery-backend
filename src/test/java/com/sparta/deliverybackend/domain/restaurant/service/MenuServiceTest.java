@@ -6,8 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
@@ -23,7 +20,7 @@ import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.OptionReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuOptionReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
@@ -138,7 +135,7 @@ public class MenuServiceTest {
 		when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
 
 		// when
-		List<OptionReqDto> options = menuService.getMenuOptions(1L);
+		List<MenuOptionReqDto> options = menuService.getMenuOptions(1L);
 
 		// then
 		assertNotNull(options);
