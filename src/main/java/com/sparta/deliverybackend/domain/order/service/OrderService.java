@@ -23,7 +23,6 @@ import com.sparta.deliverybackend.domain.order.repository.OrderMenuRepository;
 import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
-import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,6 @@ public class OrderService {
 	private final MenuRepository menuRepository;
 	private final MemberRepository memberRepository;
 	private final ManagerRepository managerRepository;
-	private final RestaurantRepository restaurantRepository;
 
 	@Transactional
 	public OrderResponseDto createOrder(VerifiedMember verifiedMember, List<OrderMenuDto> orderMenuReqs) {
@@ -105,7 +103,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderUpdateResponseDto updateOrderStatus(VerifiedMember verifiedMember, Long orderId) {
+	public OrderUpdateResponseDto updateOrder(VerifiedMember verifiedMember, Long orderId) {
 
 		if (!verifyManager(verifiedMember, orderId)) {
 			throw new IllegalArgumentException("해당 식당의 매니저가 아닙니다.");
