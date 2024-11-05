@@ -21,10 +21,30 @@ public class RestaurantService {
     private final ManagerRepository managerRepository;
     private final S3Service s3Service;
 
-    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {//로그인 유저로 바꿀 예정
+//    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {//로그인 유저로 바꿀 예정
+//        String url = s3Service.uploadImage(profileImg);
+//
+//        Manager manager = managerRepository.findById(verifiedMember.id())
+//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
+//
+//        Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
+//        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+//        return new RestaurantCreateRepDto(savedRestaurant);
+//    }
+
+    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
         String url = s3Service.uploadImage(profileImg);
 
-        Manager manager = managerRepository.findById(verifiedMember.id())
+        // 해당 사용자가 소유한 가게의 수를 조회
+        Long managerId = verifiedMember.id();
+        long restaurantCount = restaurantRepository.countByManagerId(managerId);
+
+        // 사용자가 이미 3개의 가게를 추가했는지 확인
+        if (restaurantCount >= 3) {
+            throw new IllegalArgumentException("한명당 최대 3개의 가게만 추가할 수 있습니다.");
+        }
+
+        Manager manager = managerRepository.findById(managerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
         Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
