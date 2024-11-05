@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.sparta.deliverybackend.api.oauth2.controller.dto.OauthMemberProfile;
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
 import com.sparta.deliverybackend.domain.member.controller.dto.MemberUpdateReqDto;
 
@@ -49,6 +50,16 @@ public class Member extends BaseTimeStampEntity {
 	@Column
 	private LocalDateTime deletedAt;
 
+	private String oauthId;
+
+	public Member(OauthMemberProfile oauthMemberProfile, String password) {
+		this.nickname = oauthMemberProfile.getName();
+		this.email = oauthMemberProfile.getEmail();
+		this.oauthId = oauthMemberProfile.getOauthId();
+		this.password = password;
+		this.joinPath = JoinPath.OAUTH;
+	}
+
 	public void validateAuthority(Long id) {
 		if (!this.id.equals(id)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
@@ -61,5 +72,9 @@ public class Member extends BaseTimeStampEntity {
 
 	public void delete() {
 		deletedAt = LocalDateTime.now();
+	}
+
+	public void updateOauthId(String oauthId) {
+		this.oauthId = oauthId;
 	}
 }
