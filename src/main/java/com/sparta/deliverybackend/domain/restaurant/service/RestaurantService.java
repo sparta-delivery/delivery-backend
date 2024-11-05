@@ -21,17 +21,6 @@ public class RestaurantService {
     private final ManagerRepository managerRepository;
     private final S3Service s3Service;
 
-//    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {//로그인 유저로 바꿀 예정
-//        String url = s3Service.uploadImage(profileImg);
-//
-//        Manager manager = managerRepository.findById(verifiedMember.id())
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
-//
-//        Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
-//        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-//        return new RestaurantCreateRepDto(savedRestaurant);
-//    }
-
     public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
         String url = s3Service.uploadImage(profileImg);
 
@@ -53,7 +42,7 @@ public class RestaurantService {
     }
 
     public Page<RestaurantCreateRepDto> getRestaurants(Pageable pageable, VerifiedMember verifiedMember) {
-        return restaurantRepository.findAll(pageable)
+        return restaurantRepository.findAllByDeletedAtIsNull(pageable)
                 .map(RestaurantCreateRepDto::new);
     }
 
