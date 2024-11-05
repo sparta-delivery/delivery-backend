@@ -55,6 +55,7 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.manager = managerId;
 	}
 
+
 	public void modify(String name, String openTime, String closeTime, int minPrice, Manager managerId){
 		this.name = name;
 		this.openTime = openTime;

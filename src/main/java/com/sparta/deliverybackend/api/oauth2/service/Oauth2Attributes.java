@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.oauth2.attributes;
+package com.sparta.deliverybackend.api.oauth2.service;
 
 import java.util.Arrays;
 import java.util.Map;
