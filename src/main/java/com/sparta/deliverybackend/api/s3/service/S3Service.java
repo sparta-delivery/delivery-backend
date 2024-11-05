@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.config.s3;
+package com.sparta.deliverybackend.api.s3.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.kms.model.NotFoundException;

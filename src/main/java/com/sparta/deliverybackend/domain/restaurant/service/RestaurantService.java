@@ -1,6 +1,6 @@
 package com.sparta.deliverybackend.domain.restaurant.service;
 
-import com.sparta.deliverybackend.api.config.s3.S3Service;
+import com.sparta.deliverybackend.api.s3.service.S3Service;
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
@@ -8,7 +8,6 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
