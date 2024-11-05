@@ -23,8 +23,6 @@ public class SearchController {
 
 	@GetMapping("/search")
 	public ResponseEntity<PagedModel<SearchMenuRespDto>> searchMenus(
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "10") int size,
 		@RequestParam(value = "keyword", required = false) String keyword,
 		Pageable pageable) {
 
