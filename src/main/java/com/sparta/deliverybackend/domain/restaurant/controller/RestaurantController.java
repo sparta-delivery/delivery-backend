@@ -22,14 +22,6 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
     private final S3Service s3Service;
 
-//    @PostMapping("/restaurant")
-//    public ResponseEntity<RestaurantCreateRepDto> createRestaurant(@RequestBody RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember){//로그인 유저로 바꿀 예정
-//        RestaurantCreateRepDto response = restaurantService.createRestaurant(reqDto, verifiedMember);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(response);
-//    }
-
     //가게 이미지 업로드 기능 추가
     @RequestMapping(method = RequestMethod.POST, value = "/restaurant",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -70,20 +62,4 @@ public class RestaurantController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
-
-
-    //s3에 이미지 올리는 예시용 참고 컨트롤러
-    @RequestMapping(method = RequestMethod.POST, value = "/image",
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ImageRespDto> createImage(@RequestPart(value = "title") String title, @RequestPart(value = "profileImg", required = false)MultipartFile profileImg){
-       String url = s3Service.uploadImage(profileImg);
-       ImageRespDto respDto = new ImageRespDto(title);
-       return ResponseEntity
-               .status(HttpStatus.OK)
-               .body(respDto);
-    }
-
-
-
-
 }

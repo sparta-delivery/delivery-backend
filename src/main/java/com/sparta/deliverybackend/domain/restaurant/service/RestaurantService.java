@@ -26,7 +26,7 @@ public class RestaurantService {
         String url = s3Service.uploadImage(profileImg);
 
         Manager manager = managerRepository.findById(verifiedMember.id())
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
         Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
@@ -53,7 +53,7 @@ public class RestaurantService {
     @Transactional
     public RestaurantDeleteRepDto deleteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
 
         restaurant.delete();
 
