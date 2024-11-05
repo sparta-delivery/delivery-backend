@@ -1,6 +1,5 @@
 package com.sparta.deliverybackend.domain.restaurant.controller;
 
-import com.sparta.deliverybackend.api.s3.service.S3Service;
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.service.RestaurantService;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-    private final S3Service s3Service;
 
     //가게 이미지 업로드 기능 추가
     @RequestMapping(method = RequestMethod.POST, value = "/restaurant",
@@ -42,6 +40,14 @@ public class RestaurantController {
 
         Page<RestaurantCreateRepDto> response = restaurantService.getRestaurants(pageable, verifiedMember);
 
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<RestaurantViewRespDto> getRestaurantInfo(@PathVariable Long restaurantId, VerifiedMember verifiedMember){
+        RestaurantViewRespDto response = restaurantService.getRestaurantInfo(restaurantId, verifiedMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);

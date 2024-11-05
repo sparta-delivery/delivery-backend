@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     long countByManagerId(Long managerId);
     Page<Restaurant> findAllByDeletedAtIsNull(Pageable pageable);
+    long countByManagerIdAndDeletedAtIsNull(Long managerId);
 }

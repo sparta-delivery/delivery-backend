@@ -19,10 +19,8 @@ public enum Oauth2Attributes {
 	KAKAO("kakao") {
 		@Override
 		public OauthMemberProfile of(Map<String, Object> attributes) {
-			Map<String, Object> containEmailResponse = ((Map<String, Object>)attributes.get(
-				"kakao_account"));
-			Map<String, Object> containNameResponse = ((Map<String, Object>)attributes.get(
-				"properties"));
+			Map<String, Object> containEmailResponse = ((Map<String, Object>)attributes.get("kakao_account"));
+			Map<String, Object> containNameResponse = ((Map<String, Object>)attributes.get("properties"));
 			return OauthMemberProfile.builder()
 				.oauthId(attributes.get("id").toString())
 				.email((String)containEmailResponse.get("email"))
@@ -54,6 +52,8 @@ public enum Oauth2Attributes {
 
 	private final String providerName;
 
+	public abstract OauthMemberProfile of(Map<String, Object> attributes);
+
 	Oauth2Attributes(String name) {
 		this.providerName = name;
 	}
@@ -65,6 +65,4 @@ public enum Oauth2Attributes {
 			.orElseThrow(IllegalArgumentException::new)
 			.of(attributes);
 	}
-
-	public abstract OauthMemberProfile of(Map<String, Object> attributes);
 }
