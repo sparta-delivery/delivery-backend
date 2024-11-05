@@ -50,7 +50,7 @@ public class MenuService {
 		Menu menu = menuRepository.findById(menuId)
 			.orElseThrow(() -> new EntityNotFoundException("메뉴를 찾을 수 없습니다."));
 
-		if(!menu.getRestaurant().getId().equals(restaurant.getId())){
+		if (!menu.getRestaurant().getId().equals(restaurant.getId())) {
 			throw new IllegalArgumentException("해당 가게의 메뉴가 아닙니다. 다시 확인해주세요");
 		}
 
@@ -71,7 +71,7 @@ public class MenuService {
 		Menu menu = menuRepository.findById(menuId)
 			.orElseThrow(() -> new EntityNotFoundException("메뉴를 찾을 수 없습니다."));
 
-		if(!menu.getRestaurant().getId().equals(restaurant.getId())){
+		if (!menu.getRestaurant().getId().equals(restaurant.getId())) {
 			throw new IllegalArgumentException("해당 가게의 메뉴가 아닙니다. 다시 확인해주세요");
 		}
 
