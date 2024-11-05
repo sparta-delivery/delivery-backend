@@ -56,7 +56,7 @@ class OrderServiceTest {
 			.nickname("태우")
 			.email("wootaepark@naver.com")
 			.password("1234")
-			.joinPath(JoinPath.KAKAO)
+			.joinPath(JoinPath.OAUTH)
 			.build();
 
 		// 임시 식당 객체 생성
