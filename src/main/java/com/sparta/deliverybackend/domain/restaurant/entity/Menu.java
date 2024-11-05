@@ -79,6 +79,10 @@ public class Menu extends BaseTimeStampEntity {
 
 	// JSON 문자열을 옵션 객체 리스트로 역직렬화하여 반환
 	public List<OptionReqDto> getOptions() {
+		// 테스트 코드 실행 시 null 에러 처리
+		if(this.options == null || this.options.isEmpty()){
+			return List.of();
+		}
 		try {
 			return objectMapper.readValue(this.options, new TypeReference<>() {
 			});
