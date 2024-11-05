@@ -1,6 +1,7 @@
 package com.sparta.deliverybackend.api.config.s3;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -55,7 +56,7 @@ public class S3Service {
             S3Client.putObject(bucket, keyName, file.getInputStream(), metadata);
         }catch(IOException | AmazonS3Exception e){
             log.error("S3 이미지 업로드 중 오류 발생: {}", e.getMessage(), e);
-//            throw new CustomApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new InternalError("S3 이미지 업로드 중 오류 발생");
         }
         return String.format("https://%s.s3.amazonaws.com/%s", bucket, keyName);
     }
@@ -69,7 +70,7 @@ public class S3Service {
             log.error("이미지 삭제 시도 실패: 이미지 URL 파싱 과정에서 오류 발생", e);
         } catch (AmazonServiceException e) {
             log.error("버킷에서 이미지 삭제 중 오류 발생", e);
-//            throw new CustomApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new InternalError("S3 이미지 업로드 중 오류 발생");
         }
     }
 
@@ -84,11 +85,11 @@ public class S3Service {
     private void validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             log.debug("S3 파일 업로드 실패: 파일이 없음");
-//            throw new CustomApiException(ErrorCode.FILE_NOT_FOUND);
+            throw new NotFoundException("파일이 없음");
         }
         if (file.getSize() > maxFileSize) {
             log.debug("S3 파일 업로드 실패: 파일 크기 초과");
-//            throw new CustomApiException(ErrorCode.FILE_TOO_LARGE);
+            throw new IllegalArgumentException("파일 크기 초과");
         }
     }
 
