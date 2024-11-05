@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderCancelResponseDto;
 import com.sparta.deliverybackend.domain.order.controller.dto.OrderUpdateResponseDto;
 import com.sparta.deliverybackend.domain.order.service.OrderService;
