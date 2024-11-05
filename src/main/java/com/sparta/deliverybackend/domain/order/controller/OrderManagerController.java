@@ -31,7 +31,7 @@ public class OrderManagerController {
 		@PathVariable Long orderId
 	) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(orderService.updateOrderStatus(verifiedMember, orderId));
+			.body(orderService.updateOrder(verifiedMember, orderId));
 	}
 
 	@DeleteMapping("/order/{orderId}")
