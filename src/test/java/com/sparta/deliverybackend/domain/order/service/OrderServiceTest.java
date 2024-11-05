@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.JoinPath;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
@@ -56,7 +56,7 @@ class OrderServiceTest {
 			.nickname("태우")
 			.email("wootaepark@naver.com")
 			.password("1234")
-			.joinPath(JoinPath.KAKAO)
+			.joinPath(JoinPath.OAUTH)
 			.build();
 
 		// 임시 식당 객체 생성
