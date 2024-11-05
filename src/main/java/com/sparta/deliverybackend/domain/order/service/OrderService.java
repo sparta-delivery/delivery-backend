@@ -2,6 +2,8 @@ package com.sparta.deliverybackend.domain.order.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,22 +69,34 @@ public class OrderService {
 
 		orderRepository.save(order);
 
-		// N+1 문제 해결 필요
+		//----------------------------------------------------
+
+		// 필요한 menuIds를 추출하여 한 번에 조회 (N+1 방지)
+		List<Long> menuIds = orderMenuReqs.stream()
+			.map(OrderMenuDto::getMenuId)
+			.toList();
+
+		Map<Long, Menu> menuMap = menuRepository.findAllById(menuIds).stream()
+			.collect(Collectors.toMap(Menu::getId, menu -> menu));
+
 		List<OrderMenu> orderMenus = orderMenuReqs.stream()
 			.map(orderMenuReq -> {
-				Menu menu = menuRepository.findById(orderMenuReq.getMenuId())
-					.orElseThrow(
-						() -> new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenuId()));
+				Menu menu = menuMap.get(orderMenuReq.getMenuId());
+				if (menu == null) {
+					throw new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenuId());
+				}
 				return OrderMenu.builder()
 					.menu(menu)
 					.order(order)
 					.quantity(orderMenuReq.getQuantity())
 					.build();
-
-			}).toList();
+			})
+			.toList();
 
 		List<OrderMenu> savedOrderMenus = orderMenuRepository.saveAll(orderMenus);
 		// jdbc bulkInsert 를 이용하면 좋을 듯, 성능이 5배 늘어 날 것이라고 함.
+
+		//--------------------------------------------------
 
 		return OrderResponseDto.of(order, savedOrderMenus);
 
