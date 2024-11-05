@@ -1,6 +1,6 @@
 package com.sparta.deliverybackend.api.oauth2.provider;
 
-import com.sparta.deliverybackend.api.config.Oauth2Properties;
+import com.sparta.deliverybackend.api.oauth2.config.Oauth2Properties;
 
 import lombok.Builder;
 import lombok.Getter;

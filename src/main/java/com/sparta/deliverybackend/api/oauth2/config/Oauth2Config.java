@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.config;
+package com.sparta.deliverybackend.api.oauth2.config;
 
 import java.util.Map;
 
@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.sparta.deliverybackend.api.oauth2.adapter.Oauth2Adapter;
 import com.sparta.deliverybackend.api.oauth2.provider.Oauth2Provider;
-import com.sparta.deliverybackend.api.oauth2.repository.InMemoryProviderRepository;
 
 @Configuration
 @EnableConfigurationProperties(Oauth2Properties.class)
