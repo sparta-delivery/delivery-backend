@@ -55,8 +55,7 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.manager = managerId;
 	}
 
-
-	public void modify(String name, String openTime, String closeTime, int minPrice, Manager managerId){
+	public void update(String name, String openTime, String closeTime, int minPrice, Manager managerId){
 		this.name = name;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
@@ -68,7 +67,4 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.deletedAt = LocalDateTime.now();
 	}
 
-	public Restaurant(Long restaurantId) {
-		this.id = restaurantId;
-	}
 }
