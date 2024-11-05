@@ -82,6 +82,7 @@ public class Oauth2Service {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("code", code);
 		body.add("client_id", provider.getClientId());
+		body.add("client_secret", provider.getClientSecret());
 		body.add("grant_type", "authorization_code");
 		body.add("redirect_uri", provider.getRedirectUrl());
 
