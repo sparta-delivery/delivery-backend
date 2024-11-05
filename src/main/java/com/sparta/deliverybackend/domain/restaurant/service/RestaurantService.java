@@ -31,7 +31,7 @@ public class RestaurantService {
 
         // 해당 사용자가 소유한 가게의 수를 조회
         Long managerId = verifiedMember.id();
-        long restaurantCount = restaurantRepository.countByManagerId(managerId);
+        long restaurantCount = restaurantRepository.countByManagerIdAndDeletedAtIsNull(managerId);
 
         // 사용자가 이미 3개의 가게를 추가했는지 확인
         if (restaurantCount >= 3) {
@@ -41,7 +41,13 @@ public class RestaurantService {
         Manager manager = managerRepository.findById(managerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
-        Restaurant restaurant = new Restaurant(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
+        Restaurant restaurant = Restaurant.builder()
+                .name(reqDto.getName())
+                .openTime((reqDto.getOpenTime()))
+                .closeTime(reqDto.getCloseTime())
+                .minPrice(reqDto.getMinPrice())
+                .manager((manager))
+                .build();
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return new RestaurantCreateRepDto(savedRestaurant);
     }
@@ -83,7 +89,7 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
 
-        restaurant.modify(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
+        restaurant.update(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
         return new RestaurantUpdateRepDto(restaurant);
     }
 
