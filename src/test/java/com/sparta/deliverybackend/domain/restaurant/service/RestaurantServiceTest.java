@@ -24,10 +24,10 @@ import org.springframework.data.domain.Pageable;
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateRepDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantDeleteRepDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateRepDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantDeleteRespDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
@@ -82,7 +82,7 @@ class RestaurantServiceTest {
 			return savedRestaurant;
 		});
 
-		RestaurantCreateRepDto result = restaurantService.createRestaurant(reqDto, verifiedMember, profileImg);
+		RestaurantCreateRespDto result = restaurantService.createRestaurant(reqDto, verifiedMember, profileImg);
 
 		assertNotNull(result);
 		assertEquals("Test Restaurant", result.getName());
@@ -104,7 +104,7 @@ class RestaurantServiceTest {
 
 		when(restaurantRepository.findAll(pageable)).thenReturn(restaurantPage);
 
-		Page<RestaurantCreateRepDto> result = restaurantService.getRestaurants(pageable, verifiedMember);
+		Page<RestaurantCreateRespDto> result = restaurantService.getRestaurants(pageable, verifiedMember);
 
 		assertEquals(3, result.getTotalElements()); // 총 요소 개수 검증
 		assertEquals("Test Restaurant 1", result.getContent().get(0).getName()); // 첫 번째 레스토랑 이름 검증
@@ -123,7 +123,7 @@ class RestaurantServiceTest {
 		when(managerRepository.findById(verifiedMember.id())).thenReturn(Optional.of(manager));
 		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurant));
 
-		RestaurantUpdateRepDto result = restaurantService.updateRestaurant(restaurantId, reqDto, verifiedMember);
+		RestaurantUpdateRespDto result = restaurantService.updateRestaurant(restaurantId, reqDto, verifiedMember);
 		assertNotNull(result);
 		assertEquals(restaurantId, result.getId()); // ID 비교
 		verify(restaurantRepository).findById(restaurantId);
@@ -138,7 +138,7 @@ class RestaurantServiceTest {
 
 		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurant));
 
-		RestaurantDeleteRepDto result = restaurantService.deleteRestaurant(restaurantId, verifiedMember);
+		RestaurantDeleteRespDto result = restaurantService.deleteRestaurant(restaurantId, verifiedMember);
 
 		assertNotNull(result);
 		// 현재 시간과 deletedAt이 1초 이내에 있는지 확인
