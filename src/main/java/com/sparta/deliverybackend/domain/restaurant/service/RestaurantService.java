@@ -6,6 +6,7 @@ import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
+import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,11 +15,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final ManagerRepository managerRepository;
+    private final MenuRepository menuRepository;
     private final S3Service s3Service;
 
     public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
@@ -46,6 +51,30 @@ public class RestaurantService {
                 .map(RestaurantCreateRepDto::new);
     }
 
+    public RestaurantViewRespDto getRestaurantInfo(Long restaurantId, VerifiedMember verifiedMember) {
+        Manager manager = managerRepository.findById(verifiedMember.id())
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+
+        // Menu 리스트를 MenuRespDto 리스트로 변환
+        List<MenuRespDto> menus = menuRepository.findByRestaurantId(restaurantId).stream()
+                .map(menu -> new MenuRespDto(
+                        menu.getId(),
+                        menu.getName(),
+                        menu.getPrice(),
+                        menu.getDescription(),
+                        menu.getCuisineType(),
+                        menu.getRestaurant().getId(),
+                        menu.getCreatedAt(),
+                        menu.getUpdatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        return new RestaurantViewRespDto(restaurant, menus);
+    }
+
     @Transactional
     public RestaurantUpdateRepDto updateRestaurant(Long restaurantId, RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember) {
         Manager manager = managerRepository.findById(verifiedMember.id())
@@ -68,4 +97,6 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
         return new RestaurantDeleteRepDto(restaurant);
     }
+
+
 }
