@@ -93,6 +93,8 @@ public class OrderService {
 			})
 			.toList();
 
+		// 식당 오픈 시간 및 마감 시간 사이에만 주문 가능하도록 로직 추가 예정
+
 		List<OrderMenu> savedOrderMenus = orderMenuRepository.saveAll(orderMenus);
 		// jdbc bulkInsert 를 이용하면 좋을 듯, 성능이 5배 늘어 날 것이라고 함.
 
