@@ -76,7 +76,6 @@ class OrderServiceTest {
 			.cuisineType(CuisineType.KOREAN)
 			.restaurant(restaurant)
 			.price(10000)
-			.deleted(false)
 			.build();
 
 		OrderMenuDto orderMenuDto = OrderMenuDto.builder()
