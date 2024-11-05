@@ -30,6 +30,7 @@ public class RestaurantController {
 //                .body(response);
 //    }
 
+    //가게 이미지 업로드 기능 추가
     @RequestMapping(method = RequestMethod.POST, value = "/restaurant",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RestaurantCreateRepDto> createRestaurant(
@@ -71,7 +72,7 @@ public class RestaurantController {
     }
 
 
-    //s3에 이미지 올리는 예시 컨트롤러
+    //s3에 이미지 올리는 예시용 참고 컨트롤러
     @RequestMapping(method = RequestMethod.POST, value = "/image",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageRespDto> createImage(@RequestPart(value = "title") String title, @RequestPart(value = "profileImg", required = false)MultipartFile profileImg){
