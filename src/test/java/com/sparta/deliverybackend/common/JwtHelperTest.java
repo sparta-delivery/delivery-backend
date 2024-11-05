@@ -2,8 +2,6 @@ package com.sparta.deliverybackend.common;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +9,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.sparta.deliverybackend.domain.member.entity.Member;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.JwtException;
 
 class JwtHelperTest {
 	private final JwtHelper jwtHelper = new JwtHelper();
@@ -36,15 +33,20 @@ class JwtHelperTest {
 
 		//when
 		String accessToken = jwtHelper.generateAccessToken(member);
+		Long id = jwtHelper.extractMemberId(accessToken);
 
 		//then
-		String subject = Jwts.parserBuilder()
-			.setSigningKey(Keys.hmacShaKeyFor(testTokenSecretKey.getBytes(StandardCharsets.UTF_8)))
-			.build()
-			.parseClaimsJws(accessToken)
-			.getBody()
-			.getSubject();
+		assertThat(id).isEqualTo(member.getId());
+	}
 
-		assertThat(Long.valueOf(subject)).isEqualTo(member.getId());
+	@Test
+	@DisplayName("잘못된 토큰이 들어오면 예외가 발생한다.")
+	public void validate_token_success_test() {
+		//given
+		String invalidToken = "invalid token test";
+
+		//when && then
+		assertThatThrownBy(() -> jwtHelper.validate(invalidToken))
+			.isInstanceOf(JwtException.class);
 	}
 }
