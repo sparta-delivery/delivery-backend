@@ -19,18 +19,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.deliverybackend.api.oauth2.controller.dto.OauthMemberProfile;
-import com.sparta.deliverybackend.api.oauth2.provider.Oauth2Provider;
+import com.sparta.deliverybackend.api.oauth2.provider.Oauth2ProviderProperties;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RestTemplateOauthClientService implements OauthClientService {
-	
+public class RestTemplateOauth2ClientService implements Oauth2ClientService {
+
 	private final RestTemplate restTemplate;
 
 	@Override
-	public String requestAccessToken(String code, Oauth2Provider provider) throws JsonProcessingException {
+	public String requestAccessToken(String code, Oauth2ProviderProperties provider) throws JsonProcessingException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setBasicAuth(provider.getClientId(), provider.getClientSecret());
@@ -55,7 +55,8 @@ public class RestTemplateOauthClientService implements OauthClientService {
 	}
 
 	@Override
-	public OauthMemberProfile requestMemberProfile(String accessToken, String providerName, Oauth2Provider provider
+	public OauthMemberProfile requestMemberProfile(String accessToken, String providerName,
+		Oauth2ProviderProperties provider
 	) throws JsonProcessingException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(accessToken);

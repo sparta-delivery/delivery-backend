@@ -1,5 +1,7 @@
 package com.sparta.deliverybackend.api.auth.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.sparta.deliverybackend.api.auth.controller.dto.LoginReqDto;
@@ -41,5 +43,28 @@ public class AuthService {
 		}
 		String accessToken = jwtHelper.generateAccessToken(member);
 		return new LoginResDto(accessToken);
+	}
+
+	public LoginResDto loginWithOauth(String email) {
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalArgumentException("가입된 유저를 찾을 수 없습니다."));
+		String accessToken = jwtHelper.generateAccessToken(member);
+		return new LoginResDto(accessToken);
+	}
+
+	public void registerWithOauth(String oauthId, String email, String name) {
+		memberRepository.findByEmail(email)
+			.ifPresentOrElse(
+				savedMember -> savedMember.updateOauthId(oauthId),
+				() -> {
+					String password = passwordEncoder.encode(UUID.randomUUID().toString());
+					Member oauthMember = Member.builder()
+						.oauthId(oauthId)
+						.email(email)
+						.nickname(name)
+						.password(password)
+						.build();
+					memberRepository.save(oauthMember);
+				});
 	}
 }
