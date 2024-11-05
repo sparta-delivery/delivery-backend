@@ -23,22 +23,22 @@ public class RestaurantController {
     //가게 이미지 업로드 기능 추가
     @RequestMapping(method = RequestMethod.POST, value = "/restaurant",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RestaurantCreateRepDto> createRestaurant(
+    public ResponseEntity<RestaurantCreateRespDto> createRestaurant(
             @RequestPart(value = "reqDto") RestaurantCreateReqDto reqDto,
             VerifiedMember verifiedMember,
             @RequestPart(value = "profileImg", required = false) MultipartFile profileImg){//로그인 유저로 바꿀 예정
-        RestaurantCreateRepDto response = restaurantService.createRestaurant(reqDto, verifiedMember, profileImg);
+        RestaurantCreateRespDto response = restaurantService.createRestaurant(reqDto, verifiedMember, profileImg);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
 
     @GetMapping("/restaurant")
-    public ResponseEntity<Page<RestaurantCreateRepDto>> getRestaurants(
+    public ResponseEntity<Page<RestaurantCreateRespDto>> getRestaurants(
             @PageableDefault(size = 10, page = 0) Pageable pageable,
             VerifiedMember verifiedMember) {
 
-        Page<RestaurantCreateRepDto> response = restaurantService.getRestaurants(pageable, verifiedMember);
+        Page<RestaurantCreateRespDto> response = restaurantService.getRestaurants(pageable, verifiedMember);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -54,16 +54,16 @@ public class RestaurantController {
     }
 
     @PutMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<RestaurantUpdateRepDto> updateRestaurant(@PathVariable Long restaurantId, @RequestBody RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember){
-        RestaurantUpdateRepDto response = restaurantService.updateRestaurant(restaurantId, reqDto, verifiedMember);
+    public ResponseEntity<RestaurantUpdateRespDto> updateRestaurant(@PathVariable Long restaurantId, @RequestBody RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember){
+        RestaurantUpdateRespDto response = restaurantService.updateRestaurant(restaurantId, reqDto, verifiedMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
 
     @DeleteMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<RestaurantDeleteRepDto> deleteRestaurant(@PathVariable Long restaurantId, VerifiedMember verifiedMember){
-        RestaurantDeleteRepDto response = restaurantService.deleteRestaurant(restaurantId, verifiedMember);
+    public ResponseEntity<RestaurantDeleteRespDto> deleteRestaurant(@PathVariable Long restaurantId, VerifiedMember verifiedMember){
+        RestaurantDeleteRespDto response = restaurantService.deleteRestaurant(restaurantId, verifiedMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);

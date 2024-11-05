@@ -33,4 +33,10 @@ public class FavoriteRestaurant {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	public FavoriteRestaurant(Restaurant restaurantId, Member memberId) {
+		this.restaurant = restaurantId;
+		this.member = memberId;
+
+	}
 }
