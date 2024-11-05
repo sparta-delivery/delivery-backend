@@ -13,7 +13,7 @@ import com.sparta.deliverybackend.domain.order.entity.OrderStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Slf4j(topic = "주문 상태 관련 로그 ")
 @Aspect
 @Component
 public class OrderLoggingAspect {
