@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.controller.dto;
+package com.sparta.deliverybackend.api.auth.controller.dto;
 
 import com.sparta.deliverybackend.domain.member.entity.JoinPath;
 

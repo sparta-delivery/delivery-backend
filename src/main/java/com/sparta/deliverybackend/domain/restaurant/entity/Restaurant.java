@@ -67,4 +67,8 @@ public class Restaurant extends BaseTimeStampEntity {
 	public void delete(){
 		this.deletedAt = LocalDateTime.now();
 	}
+
+	public Restaurant(Long restaurantId) {
+		this.id = restaurantId;
+	}
 }

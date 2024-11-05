@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.sparta.deliverybackend.api.controller.resolver.VerifiedMemberArgumentResolver;
+import com.sparta.deliverybackend.api.auth.controller.resolver.VerifiedMemberArgumentResolver;
 import com.sparta.deliverybackend.api.interceptor.JwtValidationInterceptor;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(jwtValidationInterceptor)
-			.excludePathPatterns("/api/auth/**");
+			.excludePathPatterns("/api/oauth2/**", "/api/auth/**", "/favicon.ico", "/error", "/oauth2.html");
 	}
 
 	@Override
