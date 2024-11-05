@@ -43,3 +43,5 @@ application.properties
 **/._.DS_Store
 
 .env
+application-ouath.properties
+application.yml
