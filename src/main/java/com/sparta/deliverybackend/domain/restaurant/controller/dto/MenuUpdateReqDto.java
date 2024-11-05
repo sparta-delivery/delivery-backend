@@ -1,5 +1,7 @@
 package com.sparta.deliverybackend.domain.restaurant.controller.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,4 +24,6 @@ public class MenuUpdateReqDto {
 
 	@NotBlank(message = "음식 카테고리를 선택해 주세요.")
 	private String cuisineType;
+
+	private List<OptionReqDto> options;
 }
