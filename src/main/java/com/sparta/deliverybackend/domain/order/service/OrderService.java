@@ -6,8 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sparta.deliverybackend.api.controller.dto.VerifiedMember;
-import com.sparta.deliverybackend.domain.member.entity.Manager;
+import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
@@ -157,11 +156,11 @@ public class OrderService {
 				() -> new IllegalArgumentException("해당 주문 id 에 해당하는 메뉴가 없습니다.")
 			);
 
-		Manager manager = managerRepository.findById(verifiedMember.id()).orElseThrow(
-			() -> new IllegalArgumentException("해당하는 식당 매니저를 찾을 수 없습니다.")
-		);
+		return managerRepository.findById(verifiedMember.id())
+			.map(manager -> manager.equals(orderMenu.getMenu().getRestaurant().getManager()))
+			.orElse(false);
 
-		return manager.equals(orderMenu.getMenu().getRestaurant().getManager());
+		// updateOrderStatus 의 조건문 실행 시 어느 하나가 없는 경우 throw 방지를 위함
 	}
 
 	private boolean verifyCustomer(VerifiedMember verifiedMember, Long orderId) {
@@ -170,11 +169,9 @@ public class OrderService {
 				() -> new IllegalArgumentException("해당 주문 id 에 해당하는 메뉴가 없습니다.")
 			);
 
-		Member member = memberRepository.findById(verifiedMember.id()).orElseThrow(
-			() -> new IllegalArgumentException("해당하는 회원을 찾을 수 없습니다.")
-		);
-
-		return member.equals(orderMenu.getOrder().getMember());
+		return memberRepository.findById(verifiedMember.id())
+			.map(member -> member.equals(orderMenu.getOrder().getMember()))
+			.orElse(false);
 	}
 
 }
