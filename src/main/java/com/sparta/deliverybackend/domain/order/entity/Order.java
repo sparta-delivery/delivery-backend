@@ -18,8 +18,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "orders")
 @Builder
@@ -44,4 +46,22 @@ public class Order {
 
 	@Column
 	private LocalDateTime completedAt;
+
+	public void updateOrderStatus() {
+		this.orderStatus = this.orderStatus.next();
+		if (this.orderStatus == OrderStatus.COMPLETE) {
+			this.completeOrder();
+		}
+	}
+
+	public void completeOrder() {
+		this.orderStatus = OrderStatus.COMPLETE;
+		if (this.completedAt == null) {
+			this.completedAt = LocalDateTime.now();
+		}
+	}
+
+	public void cancelOrder() {
+		orderStatus = OrderStatus.CANCELED;
+	}
 }
