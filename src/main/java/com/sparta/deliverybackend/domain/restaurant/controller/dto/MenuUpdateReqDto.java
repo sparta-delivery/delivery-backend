@@ -26,4 +26,13 @@ public class MenuUpdateReqDto {
 	private String cuisineType;
 
 	private List<OptionReqDto> options;
+
+	public MenuUpdateReqDto(String name, Integer price, String description, String cuisineType,
+		List<OptionReqDto> options) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+		this.cuisineType = cuisineType;
+		this.options = options;
+	}
 }
