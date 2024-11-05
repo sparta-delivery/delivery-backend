@@ -1,4 +1,4 @@
-package com.sparta.deliverybackend.api.controller;
+package com.sparta.deliverybackend.api.auth.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sparta.deliverybackend.api.controller.dto.LoginReqDto;
-import com.sparta.deliverybackend.api.controller.dto.LoginResDto;
-import com.sparta.deliverybackend.api.controller.dto.RegisterReqDto;
-import com.sparta.deliverybackend.api.service.AuthService;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginReqDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.LoginResDto;
+import com.sparta.deliverybackend.api.auth.controller.dto.RegisterReqDto;
+import com.sparta.deliverybackend.api.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
