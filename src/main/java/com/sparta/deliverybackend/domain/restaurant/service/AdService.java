@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
-import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.AdReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.AdRespDto;
@@ -25,10 +24,9 @@ public class AdService {
 
 	private final AdRepository adRepository;
 	private final RestaurantRepository restaurantRepository;
-	private final ManagerRepository managerRepository;
 
 	// 광고 조회 검증
-	private Ad findAdOrThrow(Long adId) {
+	private Ad findAd(Long adId) {
 		return adRepository.findById(adId)
 			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_AD));
 	}
@@ -38,10 +36,7 @@ public class AdService {
 		Restaurant restaurant = restaurantRepository.findById(adReqDto.getRestaurantId())
 			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_RESTAURANT));
 
-		Manager manager = managerRepository.findById(verifiedMember.id())
-			.orElseThrow(() -> new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_AD_CREATE));
-
-		if (!restaurant.getManager().getId().equals(manager.getId())) {
+		if (!restaurant.getManager().getId().equals(verifiedMember.id())) {
 			throw new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_AD_CREATE);
 		}
 
@@ -61,22 +56,19 @@ public class AdService {
 
 	@Transactional
 	public void activeAds(Long adId) {
-		Ad ad = findAdOrThrow(adId);
+		Ad ad = findAd(adId);
 		ad.activeAds();
-		adRepository.save(ad);
 	}
 
 	@Transactional
 	public void inActiveAds(Long adId) {
-		Ad ad = findAdOrThrow(adId);
+		Ad ad = findAd(adId);
 		ad.inActiveAds();
-		adRepository.save(ad);
 	}
 
 	@Transactional
 	public void deleteAd(Long adId) {
-		Ad ad = findAdOrThrow(adId);
+		Ad ad = findAd(adId);
 		ad.delete();
-		adRepository.save(ad);
 	}
 }
