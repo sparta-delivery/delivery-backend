@@ -26,6 +26,9 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.CommentRespDt
 import com.sparta.deliverybackend.domain.restaurant.entity.Comment;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.CommentRepository;
+import com.sparta.deliverybackend.exception.customException.EtcException;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -104,7 +107,7 @@ class CommentServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> commentService.createComment(req, verifiedMember, orderId))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(EtcException.class)
 			.hasMessageContaining("완료된 주문이 아닙니다.");
 	}
 
@@ -186,8 +189,8 @@ class CommentServiceTest {
 
 		//when
 		assertThatThrownBy(() -> commentService.createManagerComment(req, verifiedMember, 1L))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 리뷰입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당 리뷰를 찾을 수 없습니다.");
 	}
 
 	@Test
@@ -202,8 +205,8 @@ class CommentServiceTest {
 
 		//when
 		assertThatThrownBy(() -> commentService.createManagerComment(req, verifiedMember, 1L))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 사장입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당 사장을 찾을 수 없습니다.");
 	}
 
 	@Test
@@ -260,8 +263,8 @@ class CommentServiceTest {
 
 		//when
 		assertThatThrownBy(() -> commentService.delete(verifiedMember, commentId))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("권한이 없습니다.");
+			.isInstanceOf(NotHaveAuthorityException.class)
+			.hasMessageContaining("해당 권한이 없습니다.");
 	}
 
 	@Test
@@ -277,7 +280,7 @@ class CommentServiceTest {
 
 		//when
 		assertThatThrownBy(() -> commentService.delete(verifiedMember, commentId))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 리뷰입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당 리뷰를 찾을 수 없습니다.");
 	}
 }

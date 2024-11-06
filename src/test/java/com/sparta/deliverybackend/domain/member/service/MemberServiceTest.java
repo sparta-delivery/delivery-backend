@@ -17,6 +17,7 @@ import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.controller.dto.MemberUpdateReqDto;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -38,8 +39,8 @@ class MemberServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> memberService.update(memberId, req, verifiedMember))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 유저입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당하는 회원을 찾을 수 없습니다.");
 	}
 
 	@Test
@@ -90,8 +91,8 @@ class MemberServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> memberService.delete(memberId, verifiedMember))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 유저입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당하는 회원을 찾을 수 없습니다.");
 	}
 
 	@Test
