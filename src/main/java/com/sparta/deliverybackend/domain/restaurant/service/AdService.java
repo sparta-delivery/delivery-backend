@@ -9,6 +9,7 @@ import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.AdReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.AdRespDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.Ad;
+import com.sparta.deliverybackend.domain.restaurant.entity.AdStatus;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.AdRepository;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
@@ -44,9 +45,14 @@ public class AdService {
 			throw new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_AD_CREATE);
 		}
 
+		if(adRepository.existsById(restaurant.getId())){
+			throw new IllegalArgumentException("이미 광고가 등록된 가게입니다. 다시 확인해 주세요.");
+		}
+
 		Ad ad = Ad.builder()
 			.restaurant(restaurant)
-			.isActive(false)
+			// 광고 최초 생성 시 광고 비활성화 상태
+			.adStatus(AdStatus.INACTIVE)
 			.build();
 
 		adRepository.save(ad);
@@ -56,7 +62,6 @@ public class AdService {
 	@Transactional
 	public void activeAds(Long adId) {
 		Ad ad = findAdOrThrow(adId);
-
 		ad.activeAds();
 		adRepository.save(ad);
 	}
@@ -64,8 +69,14 @@ public class AdService {
 	@Transactional
 	public void inActiveAds(Long adId) {
 		Ad ad = findAdOrThrow(adId);
-
 		ad.inActiveAds();
+		adRepository.save(ad);
+	}
+
+	@Transactional
+	public void deleteAd(Long adId) {
+		Ad ad = findAdOrThrow(adId);
+		ad.delete();
 		adRepository.save(ad);
 	}
 }

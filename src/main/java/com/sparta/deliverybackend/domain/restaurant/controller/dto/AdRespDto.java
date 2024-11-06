@@ -1,8 +1,7 @@
 package com.sparta.deliverybackend.domain.restaurant.controller.dto;
 
-import java.time.LocalDateTime;
-
 import com.sparta.deliverybackend.domain.restaurant.entity.Ad;
+import com.sparta.deliverybackend.domain.restaurant.entity.AdStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +14,14 @@ public class AdRespDto {
 
 	private Long id;
 	private Long restaurantId;
-	private boolean isActive;
+	private AdStatus adStatus;
+
 
 	public static AdRespDto from(Ad ad) {
 		return AdRespDto.builder()
 			.id(ad.getId())
 			.restaurantId(ad.getRestaurant().getId())
-			.isActive(ad.isActive())
+			.adStatus(ad.getAdStatus())
 			.build();
 	}
 
