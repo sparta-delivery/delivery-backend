@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
-import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
-import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
@@ -24,6 +22,7 @@ import com.sparta.deliverybackend.domain.order.entity.OrderStatus;
 import com.sparta.deliverybackend.domain.order.repository.OrderMenuRepository;
 import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
+import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -133,6 +132,18 @@ public class OrderService {
 
 		order.cancelOrder();
 		return OrderCancelResponseDto.from(order);
+	}
+
+	public Order findOrder(Long orderId) {
+		return orderRepository.findById(orderId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+	}
+
+	public Restaurant findOrderRestaurant(Long orderId) {
+		OrderMenu orderMenu = orderMenuRepository.findFirstByOrderId(orderId)
+			.orElseThrow(() -> new IllegalArgumentException("주문에 메뉴가 존재하지 않습니다."));
+		Menu menu = orderMenu.getMenu();
+		return menu.getRestaurant();
 	}
 
 	// 주문에 포함된 메뉴들 조회

@@ -61,6 +61,16 @@ public class Order {
 		}
 	}
 
+	public void validateStatusIsComplete() {
+		if (!orderStatus.equals(OrderStatus.COMPLETE)) {
+			throw new IllegalArgumentException("완료된 주문이 아닙니다.");
+		}
+	}
+
+	public void validateOrderedMember(Member otherMember) {
+		member.validateAuthority(otherMember);
+	}
+
 	public void cancelOrder() {
 		orderStatus = OrderStatus.CANCELED;
 	}
