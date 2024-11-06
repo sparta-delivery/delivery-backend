@@ -114,4 +114,85 @@ class AuthServiceTest {
 		verify(passwordEncoder, times(1)).matches(any(), any());
 		verify(memberRepository, times(1)).findByEmail(any());
 	}
+
+	@Test
+	@DisplayName("Oauth를 통한 login 시도 시 유저가 없으면 예외가 발생한다.")
+	public void oauth_login_exception_test() {
+		//given
+		String email = "dost@not.exists";
+		when(memberRepository.findByEmail(email))
+			.thenReturn(Optional.empty());
+
+		//when && then
+		assertThatThrownBy(() -> authService.loginWithOauth(email))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("가입된 유저를 찾을 수 없습니다");
+	}
+
+	@Test
+	@DisplayName("Oauth를 통한 register 시도 시 이미 유저가 존재하면 oauthId가 업데이트 된다.")
+	public void oauth_register_update_oauthId_test() {
+		//given
+		String oauthId = "12345";
+		String name = "kimwanyoung";
+		String email = "user@email.com";
+		Member member = Member.builder()
+			.oauthId(null)
+			.nickname(name)
+			.email(email)
+			.build();
+
+		when(memberRepository.findByEmail(email))
+			.thenReturn(Optional.of(member));
+
+		//when
+		authService.registerWithOauth(oauthId, email, name);
+
+		//then
+		assertThat(member.getOauthId()).isEqualTo(oauthId);
+	}
+
+	@Test
+	@DisplayName("Oauth로 최초 회원가입 시도 하면 새로운 멤버가 저장된다.")
+	public void oauth_new_member_register_success_test() {
+		//given
+		String oauthId = "12345";
+		String name = "kimwanyoung";
+		String email = "user@email.com";
+
+		when(memberRepository.findByEmail(email))
+			.thenReturn(Optional.empty());
+
+		//when
+		authService.registerWithOauth(oauthId, email, name);
+
+		//then
+		verify(memberRepository, times(1)).save(any(Member.class));
+	}
+
+	@Test
+	@DisplayName("Oauth로 정상적인 login호출 시 LoginResDto가 반환된다.")
+	public void oauth_login_success_test() {
+		//given
+		String oauthId = "12345";
+		String name = "kimwanyoung";
+		String email = "user@email.com";
+		Member member = Member.builder()
+			.oauthId(oauthId)
+			.nickname(name)
+			.email(email)
+			.build();
+
+		when(memberRepository.findByEmail(email))
+			.thenReturn(Optional.of(member));
+		when(jwtHelper.generateAccessToken(member))
+			.thenReturn("validAccessToken");
+
+		//when
+		LoginResDto result = authService.loginWithOauth(email);
+
+		//then
+		assertThat(result.accessToken()).isEqualTo("validAccessToken");
+		verify(memberRepository, times(1)).findByEmail(eq(email));
+	}
 }
