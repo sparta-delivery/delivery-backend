@@ -29,7 +29,6 @@ public class RestaurantService {
     public RestaurantCreateRespDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
         String url = s3Service.uploadImage(profileImg);
 
-        // 해당 사용자가 소유한 가게의 수를 조회
         Long managerId = verifiedMember.id();
         long restaurantCount = restaurantRepository.countByManagerIdAndDeletedAtIsNull(managerId);
 
@@ -58,11 +57,9 @@ public class RestaurantService {
     }
 
     public RestaurantViewRespDto getRestaurantInfo(Long restaurantId, VerifiedMember verifiedMember) {
-        Manager manager = managerRepository.findById(verifiedMember.id())
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+        Manager manager = findManager(verifiedMember);
+        Restaurant restaurant = findRestaurant(restaurantId);
 
         // Menu 리스트를 MenuRespDto 리스트로 변환
         List<MenuRespDto> menus = menuRepository.findByRestaurantId(restaurantId).stream()
@@ -83,11 +80,9 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantUpdateRespDto updateRestaurant(Long restaurantId, RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember) {
-        Manager manager = managerRepository.findById(verifiedMember.id())
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+        Manager manager = findManager(verifiedMember);
+        Restaurant restaurant = findRestaurant(restaurantId);
 
         restaurant.update(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
         return new RestaurantUpdateRespDto(restaurant);
@@ -95,13 +90,22 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantDeleteRespDto deleteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+        Restaurant restaurant = findRestaurant(restaurantId);
 
         restaurant.delete();
 
         restaurantRepository.save(restaurant);
         return new RestaurantDeleteRespDto(restaurant);
+    }
+
+    private Manager findManager(VerifiedMember verifiedMember){
+        return managerRepository.findById(verifiedMember.id())
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
+    }
+
+    private Restaurant findRestaurant(Long restaurantId){
+        return restaurantRepository.findById(restaurantId)
+                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
     }
 
 
