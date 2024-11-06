@@ -45,7 +45,7 @@ public class AuthController {
 			.build();
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/login/manager")
 	public ResponseEntity<LoginResDto> managerLogin(@RequestBody LoginReqDto req) {
 		LoginResDto response = authService.managerLogin(req);
 		return ResponseEntity
