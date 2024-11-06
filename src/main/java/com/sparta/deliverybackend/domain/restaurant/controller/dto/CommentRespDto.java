@@ -12,13 +12,15 @@ import lombok.NoArgsConstructor;
 public class CommentRespDto {
 	private Long commentId;
 	private String content;
+	private String reply;
 	private MemberRespDto member;
 
 	@Builder
-	public CommentRespDto(Long commentId, String content, MemberRespDto member) {
+	public CommentRespDto(Long commentId, String content, String reply, MemberRespDto member) {
 		this.commentId = commentId;
 		this.content = content;
 		this.member = member;
+		this.reply = reply;
 	}
 
 	public static CommentRespDto from(Comment comment) {

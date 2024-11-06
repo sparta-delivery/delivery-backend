@@ -39,14 +39,14 @@ public class CommentController {
 
 	@PostMapping("/{commentId}/manager-comment")
 	public ResponseEntity<CommentRespDto> createManagerComment(
-		@PathVariable Long orderId,
 		@PathVariable Long commentId,
 		@RequestBody CommentCreateReqDto req,
 		VerifiedMember verifiedMember
 	) {
+		CommentRespDto response = commentService.createManagerComment(req, verifiedMember, commentId);
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
-			.body(new CommentRespDto());
+			.body(response);
 	}
 
 	@PatchMapping("/{commentId}")
