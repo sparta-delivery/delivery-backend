@@ -9,9 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.OptionReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuOptionReqDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +26,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Entity
@@ -78,7 +76,7 @@ public class Menu extends BaseTimeStampEntity {
 	}
 
 	// JSON 문자열을 옵션 객체 리스트로 역직렬화하여 반환
-	public List<OptionReqDto> getOptions() {
+	public List<MenuOptionReqDto> getOptions() {
 		// 테스트 코드 실행 시 null 에러 처리
 		if(this.options == null || this.options.isEmpty()){
 			return List.of();
@@ -91,7 +89,7 @@ public class Menu extends BaseTimeStampEntity {
 		}
 	}
 
-	public void updateOptions(List<OptionReqDto> newOptions) {
+	public void updateOptions(List<MenuOptionReqDto> newOptions) {
 		try {
 			this.options = objectMapper.writeValueAsString(newOptions);
 		} catch (JsonProcessingException e) {

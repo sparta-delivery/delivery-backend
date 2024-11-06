@@ -11,7 +11,7 @@ import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.OptionReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuOptionReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
@@ -105,13 +105,13 @@ public class MenuService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<OptionReqDto> getMenuOptions(Long menuId) {
+	public List<MenuOptionReqDto> getMenuOptions(Long menuId) {
 		Menu menu = findMenuOrThrow(menuId);
 		return menu.getOptions();
 	}
 
 	@Transactional
-	public void updateMenuOptions(Long restaurantId, Long menuId, List<OptionReqDto> optionReqDtos,
+	public void updateMenuOptions(Long restaurantId, Long menuId, List<MenuOptionReqDto> menuOptionReqDtos,
 		VerifiedMember verifiedMember) {
 		Restaurant restaurant = findRestaurantOrThrow(restaurantId);
 		findManagerOrThrow(verifiedMember);
@@ -119,7 +119,7 @@ public class MenuService {
 		Menu menu = findMenuOrThrow(menuId);
 		validateMenuOwnership(restaurant, menu);
 
-		menu.updateOptions(optionReqDtos);
+		menu.updateOptions(menuOptionReqDtos);
 		menuRepository.save(menu);
 	}
 }
