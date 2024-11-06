@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionCode {
+	INVALID_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"),
 
 	NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "해당하는 주문을 찾을 수 없습니다."),
 
