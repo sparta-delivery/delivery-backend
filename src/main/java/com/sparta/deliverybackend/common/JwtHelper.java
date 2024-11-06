@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.sparta.deliverybackend.domain.member.entity.Member;
+import com.sparta.deliverybackend.domain.member.entity.User;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -32,9 +32,9 @@ public class JwtHelper {
 		key = Keys.hmacShaKeyFor(tokenSecretKey.getBytes(StandardCharsets.UTF_8));
 	}
 
-	public String generateAccessToken(Member member) {
+	public String generateAccessToken(User user) {
 		return Jwts.builder()
-			.setSubject(member.getId().toString())
+			.setSubject(user.getId().toString())
 			.setIssuedAt(new Date(System.currentTimeMillis()))
 			.setExpiration(new Date(System.currentTimeMillis() + tokenExpiresIn))
 			.signWith(key, SignatureAlgorithm.HS256)
