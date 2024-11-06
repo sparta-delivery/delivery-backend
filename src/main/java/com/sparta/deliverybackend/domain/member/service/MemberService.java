@@ -15,6 +15,11 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 
+	public Member findMember(Long id) {
+		return memberRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+	}
+
 	public void update(Long id, MemberUpdateReqDto req, VerifiedMember verifiedMember) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
