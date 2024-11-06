@@ -31,9 +31,10 @@ public class CommentController {
 		@RequestBody CommentCreateReqDto req,
 		VerifiedMember verifiedMember
 	) {
+		CommentRespDto response = commentService.createComment(req, verifiedMember, orderId);
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
-			.body(new CommentRespDto());
+			.body(response);
 	}
 
 	@PostMapping("/{commentId}/manager-comment")

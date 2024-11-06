@@ -66,6 +66,12 @@ public class Member extends BaseTimeStampEntity {
 		}
 	}
 
+	public void validateAuthority(Member member) {
+		if (!this.id.equals(member.id)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+		}
+	}
+
 	public void update(MemberUpdateReqDto req) {
 		nickname = req.nickname();
 	}

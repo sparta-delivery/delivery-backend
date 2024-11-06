@@ -34,6 +34,9 @@ public class Comment extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	private String contents;
 
+	@Column
+	private String managerReply;
+
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
@@ -48,4 +51,7 @@ public class Comment extends BaseTimeStampEntity {
 
 	@Column
 	private LocalDateTime deletedAt;
+
+	@Column
+	private LocalDateTime repliedAt;
 }
