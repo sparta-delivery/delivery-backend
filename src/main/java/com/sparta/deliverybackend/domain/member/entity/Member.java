@@ -83,4 +83,8 @@ public class Member extends BaseTimeStampEntity {
 	public void updateOauthId(String oauthId) {
 		this.oauthId = oauthId;
 	}
+
+	public boolean isSameMember(Member member) {
+		return id.equals(member.id);
+	}
 }

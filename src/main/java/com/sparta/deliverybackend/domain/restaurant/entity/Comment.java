@@ -59,4 +59,14 @@ public class Comment extends BaseTimeStampEntity {
 		this.managerReply = reply;
 		this.repliedAt = LocalDateTime.now();
 	}
+
+	public void validateMember(Member member) {
+		if (!this.member.isSameMember(member)) {
+			throw new IllegalArgumentException("권한이 없습니다.");
+		}
+	}
+
+	public void delete() {
+		this.deletedAt = LocalDateTime.now();
+	}
 }
