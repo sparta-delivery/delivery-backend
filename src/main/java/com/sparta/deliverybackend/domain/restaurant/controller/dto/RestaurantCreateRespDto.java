@@ -4,11 +4,9 @@ import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
-public class RestaurantCreateRepDto {
+public class RestaurantCreateRespDto {
     private Long id;
     private String name;
     private String openTime;
@@ -16,7 +14,7 @@ public class RestaurantCreateRepDto {
     private int minPrice;
     private Long managerId;
 
-    public RestaurantCreateRepDto(Restaurant restaurant) {
+    public RestaurantCreateRespDto(Restaurant restaurant) {
         this.id = restaurant.getId();
         this.name = restaurant.getName();
         this.openTime = restaurant.getOpenTime();

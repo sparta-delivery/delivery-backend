@@ -26,7 +26,7 @@ public class RestaurantService {
     private final MenuRepository menuRepository;
     private final S3Service s3Service;
 
-    public RestaurantCreateRepDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
+    public RestaurantCreateRespDto createRestaurant(RestaurantCreateReqDto reqDto, VerifiedMember verifiedMember, MultipartFile profileImg) {
         String url = s3Service.uploadImage(profileImg);
 
         // 해당 사용자가 소유한 가게의 수를 조회
@@ -49,12 +49,12 @@ public class RestaurantService {
                 .manager((manager))
                 .build();
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        return new RestaurantCreateRepDto(savedRestaurant);
+        return new RestaurantCreateRespDto(savedRestaurant);
     }
 
-    public Page<RestaurantCreateRepDto> getRestaurants(Pageable pageable, VerifiedMember verifiedMember) {
+    public Page<RestaurantCreateRespDto> getRestaurants(Pageable pageable, VerifiedMember verifiedMember) {
         return restaurantRepository.findAllByDeletedAtIsNull(pageable)
-                .map(RestaurantCreateRepDto::new);
+                .map(RestaurantCreateRespDto::new);
     }
 
     public RestaurantViewRespDto getRestaurantInfo(Long restaurantId, VerifiedMember verifiedMember) {
@@ -82,7 +82,7 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantUpdateRepDto updateRestaurant(Long restaurantId, RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember) {
+    public RestaurantUpdateRespDto updateRestaurant(Long restaurantId, RestaurantUpdateReqDto reqDto, VerifiedMember verifiedMember) {
         Manager manager = managerRepository.findById(verifiedMember.id())
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 사장님 아이디입니다."));
 
@@ -90,18 +90,18 @@ public class RestaurantService {
                 .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
 
         restaurant.update(reqDto.getName(), reqDto.getOpenTime(), reqDto.getCloseTime(), reqDto.getMinPrice(), manager);
-        return new RestaurantUpdateRepDto(restaurant);
+        return new RestaurantUpdateRespDto(restaurant);
     }
 
     @Transactional
-    public RestaurantDeleteRepDto deleteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
+    public RestaurantDeleteRespDto deleteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
 
         restaurant.delete();
 
         restaurantRepository.save(restaurant);
-        return new RestaurantDeleteRepDto(restaurant);
+        return new RestaurantDeleteRespDto(restaurant);
     }
 
 
