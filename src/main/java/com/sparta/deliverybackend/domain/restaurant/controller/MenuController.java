@@ -42,12 +42,12 @@ public class MenuController {
 
 	// 메뉴 수정
 	@PatchMapping("/{restaurantId}/menus/{menuId}")
-	public ResponseEntity<Void> updateMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
+	public ResponseEntity<MenuRespDto> updateMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
 		@RequestBody @Valid MenuUpdateReqDto menuUpdateReqDto, VerifiedMember verifiedMember) {
-		menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto, verifiedMember);
+		MenuRespDto menuRespDto = menuService.updateMenu(restaurantId, menuId, menuUpdateReqDto, verifiedMember);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
-			.build();
+			.body(menuRespDto);
 	}
 
 	// 메뉴 삭제

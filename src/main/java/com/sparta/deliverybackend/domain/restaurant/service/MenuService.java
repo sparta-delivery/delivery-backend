@@ -75,7 +75,7 @@ public class MenuService {
 	}
 
 	@Transactional
-	public void updateMenu(Long restaurantId, Long menuId, MenuUpdateReqDto menuUpdateReqDto,
+	public MenuRespDto updateMenu(Long restaurantId, Long menuId, MenuUpdateReqDto menuUpdateReqDto,
 		VerifiedMember verifiedMember) {
 		Restaurant restaurant = findRestaurantOrThrow(restaurantId);
 		findManagerOrThrow(verifiedMember);
@@ -93,6 +93,7 @@ public class MenuService {
 			.build();
 
 		menuRepository.save(updateMenu);
+		return updateMenu.to();
 	}
 
 	@Transactional
