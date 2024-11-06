@@ -24,8 +24,12 @@ import com.sparta.deliverybackend.domain.order.repository.OrderRepository;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
+import com.sparta.deliverybackend.exception.customException.EtcException;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
+import com.sparta.deliverybackend.exception.customException.OrderPriceMismatchingException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -42,11 +46,11 @@ public class OrderService {
 	public OrderResponseDto createOrder(VerifiedMember verifiedMember, List<OrderMenuDto> orderMenuReqs) {
 
 		if (orderMenuReqs == null || orderMenuReqs.isEmpty()) {
-			throw new IllegalArgumentException("주문 메뉴가 없습니다.");
+			throw new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU);
 		}
 
 		Member member = memberRepository.findById(verifiedMember.id())
-			.orElseThrow(() -> new EntityNotFoundException("Member not found"));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MEMBER));
 
 		List<Menu> menus = getMenusFromRequest(orderMenuReqs);
 		validateSameRestaurant(menus);
@@ -57,7 +61,7 @@ public class OrderService {
 
 		long minimumOrderAmount = menus.get(0).getRestaurant().getMinPrice();
 		if (totalAmount < minimumOrderAmount) {
-			throw new IllegalArgumentException("최소 주문 금액을 충족하지 못했습니다. 최소 주문 금액: " + minimumOrderAmount + "원");
+			throw new OrderPriceMismatchingException(ExceptionCode.NO_SATISFY_MIN_PRICE);
 		}
 
 		Order order = Order.builder()
@@ -82,7 +86,7 @@ public class OrderService {
 			.map(orderMenuReq -> {
 				Menu menu = menuMap.get(orderMenuReq.getMenuId());
 				if (menu == null) {
-					throw new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenuId());
+					throw new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU);
 				}
 				return OrderMenu.builder()
 					.menu(menu)
@@ -107,12 +111,12 @@ public class OrderService {
 	public OrderUpdateResponseDto updateOrder(VerifiedMember verifiedMember, Long orderId) {
 
 		if (!verifyManager(verifiedMember, orderId)) {
-			throw new IllegalArgumentException("해당 식당의 매니저가 아닙니다.");
+			throw new NotHaveAuthorityException(ExceptionCode.NOT_MANAGER);
 		}
 
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(
-				() -> new EntityNotFoundException("Order id " + orderId + " not found"));
+				() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER));
 
 		order.updateOrderStatus();
 		orderRepository.save(order);
@@ -124,11 +128,11 @@ public class OrderService {
 	public OrderCancelResponseDto cancelOrder(VerifiedMember verifiedMember, Long orderId) {
 		if (!verifyManager(verifiedMember, orderId) && !verifyCustomer(verifiedMember, orderId)) {
 			// 매니저 아이디도, 고객 아이디도 일치하지 않는 경우
-			throw new IllegalArgumentException("이 주문을 취소할 권한이 없습니다.");
+			throw new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_ORDER_CANCEL);
 		}
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(
-				() -> new EntityNotFoundException("Order id " + orderId + " not found"));
+				() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER));
 
 		order.cancelOrder();
 		return OrderCancelResponseDto.from(order);
@@ -136,12 +140,12 @@ public class OrderService {
 
 	public Order findOrder(Long orderId) {
 		return orderRepository.findById(orderId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER));
 	}
 
 	public Restaurant findOrderRestaurant(Long orderId) {
 		OrderMenu orderMenu = orderMenuRepository.findFirstByOrderId(orderId)
-			.orElseThrow(() -> new IllegalArgumentException("주문에 메뉴가 존재하지 않습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER_MENU));
 		Menu menu = orderMenu.getMenu();
 		return menu.getRestaurant();
 	}
@@ -157,13 +161,13 @@ public class OrderService {
 	// 동일한 식당의 메뉴인지 검증
 	private void validateSameRestaurant(List<Menu> menus) {
 		if (menus.isEmpty()) {
-			throw new IllegalArgumentException("menus 가 비어있습니다.");
+			throw new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU);
 		}
 		Long restaurantId = menus.get(0).getRestaurant().getId();
 		boolean allSameRestaurant = menus.stream()
 			.allMatch(menu -> menu.getRestaurant().getId().equals(restaurantId));
 		if (!allSameRestaurant) {
-			throw new IllegalArgumentException("같은 식당에서만 주문이 가능합니다.");
+			throw new EtcException(ExceptionCode.NOT_SAME_RESTAURANT_ORDER);
 		}
 	}
 
@@ -174,7 +178,7 @@ public class OrderService {
 				Menu menu = menus.stream()
 					.filter(m -> m.getId().equals(orderMenuReq.getMenuId()))
 					.findFirst()
-					.orElseThrow(() -> new IllegalArgumentException("Invalid menu ID: " + orderMenuReq.getMenuId()));
+					.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU));
 				return menu.getPrice() * orderMenuReq.getQuantity();
 			}).sum();
 	}
@@ -182,7 +186,7 @@ public class OrderService {
 	private boolean verifyManager(VerifiedMember verifiedMember, Long orderId) {
 		OrderMenu orderMenu = orderMenuRepository.findFirstByOrderId(orderId)
 			.orElseThrow(
-				() -> new IllegalArgumentException("해당 주문 id 에 해당하는 메뉴가 없습니다.")
+				() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER_MENU)
 			);
 
 		return managerRepository.findById(verifiedMember.id())
@@ -195,7 +199,7 @@ public class OrderService {
 	private boolean verifyCustomer(VerifiedMember verifiedMember, Long orderId) {
 		OrderMenu orderMenu = orderMenuRepository.findFirstByOrderId(orderId)
 			.orElseThrow(
-				() -> new IllegalArgumentException("해당 주문 id 에 해당하는 메뉴가 없습니다.")
+				() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER_MENU)
 			);
 
 		return memberRepository.findById(verifiedMember.id())
