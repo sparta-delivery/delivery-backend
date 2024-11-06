@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -73,7 +75,7 @@ public class Restaurant extends BaseTimeStampEntity {
 
 	public void validateRestaurantManager(Manager manager) {
 		if (!this.manager.isSameManager(manager)) {
-			throw new IllegalArgumentException("가게의 사장이 아닙니다.");
+			throw new NotHaveAuthorityException(ExceptionCode.NOT_MANAGER);
 		}
 	}
 

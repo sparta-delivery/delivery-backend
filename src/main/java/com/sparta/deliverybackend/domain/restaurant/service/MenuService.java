@@ -9,16 +9,19 @@ import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuCreateReqDto;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuOptionReqDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuRespDto;
 import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuUpdateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.MenuOptionReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
+import com.sparta.deliverybackend.exception.customException.EtcException;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,25 +35,25 @@ public class MenuService {
 	// Restaurant 조회 검증
 	private Restaurant findRestaurantOrThrow(Long restaurantId) {
 		return restaurantRepository.findById(restaurantId)
-			.orElseThrow(() -> new EntityNotFoundException("가게를 찾을 수 없습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_RESTAURANT));
 	}
 
 	// Manager 조회 검증
 	private Manager findManagerOrThrow(VerifiedMember verifiedMember) {
 		return managerRepository.findById(verifiedMember.id())
-			.orElseThrow(() -> new EntityNotFoundException("메뉴를 생성할 권한이 없습니다."));
+			.orElseThrow(() -> new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_CREATE_MENU));
 	}
 
 	// Menu 조회 검증
 	private Menu findMenuOrThrow(Long menuId) {
 		return menuRepository.findById(menuId)
-			.orElseThrow(() -> new EntityNotFoundException("메뉴를 찾을 수 없습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU));
 	}
 
 	// Menu 해당 가게 검증
 	private void validateMenuOwnership(Restaurant restaurant, Menu menu) {
 		if (!menu.getRestaurant().getId().equals(restaurant.getId())) {
-			throw new IllegalArgumentException("해당 가게의 메뉴가 아닙니다. 다시 확인해주세요.");
+			throw new EtcException(ExceptionCode.NOT_MATCH_RESTAURANT_MENU);
 		}
 	}
 
