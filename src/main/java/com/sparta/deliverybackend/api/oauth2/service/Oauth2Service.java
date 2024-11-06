@@ -10,7 +10,6 @@ import com.sparta.deliverybackend.api.oauth2.controller.dto.OauthMemberProfile;
 import com.sparta.deliverybackend.api.oauth2.provider.Oauth2ProviderProperties;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,8 +20,7 @@ public class Oauth2Service {
 	private final InMemoryProviderRepository inMemoryProviderRepository;
 	private final Oauth2ClientService oauthClientService;
 	private final AuthService authService;
-
-	@Transactional
+	
 	public LoginResDto loginOrRegister(String providerName, String authorizationCode) throws
 		JsonProcessingException {
 		Oauth2ProviderType providerType = Oauth2ProviderType.of(providerName);

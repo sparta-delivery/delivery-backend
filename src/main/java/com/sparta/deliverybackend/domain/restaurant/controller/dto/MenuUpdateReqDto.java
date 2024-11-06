@@ -25,10 +25,10 @@ public class MenuUpdateReqDto {
 	@NotBlank(message = "음식 카테고리를 선택해 주세요.")
 	private String cuisineType;
 
-	private List<OptionReqDto> options;
+	private List<MenuOptionReqDto> options;
 
 	public MenuUpdateReqDto(String name, Integer price, String description, String cuisineType,
-		List<OptionReqDto> options) {
+		List<MenuOptionReqDto> options) {
 		this.name = name;
 		this.price = price;
 		this.description = description;

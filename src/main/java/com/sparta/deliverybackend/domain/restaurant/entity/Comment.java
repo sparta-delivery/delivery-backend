@@ -34,6 +34,9 @@ public class Comment extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	private String contents;
 
+	@Column
+	private String managerReply;
+
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
@@ -48,4 +51,22 @@ public class Comment extends BaseTimeStampEntity {
 
 	@Column
 	private LocalDateTime deletedAt;
+
+	@Column
+	private LocalDateTime repliedAt;
+
+	public void updateManagerReply(String reply) {
+		this.managerReply = reply;
+		this.repliedAt = LocalDateTime.now();
+	}
+
+	public void validateMember(Member member) {
+		if (!this.member.isSameMember(member)) {
+			throw new IllegalArgumentException("권한이 없습니다.");
+		}
+	}
+
+	public void delete() {
+		this.deletedAt = LocalDateTime.now();
+	}
 }
