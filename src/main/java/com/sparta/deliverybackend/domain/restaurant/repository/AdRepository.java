@@ -9,5 +9,4 @@ import com.sparta.deliverybackend.domain.restaurant.entity.Ad;
 
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Long> {
-	List<Ad> findByIsActiveTrue();
 }
