@@ -28,6 +28,7 @@ public class CommentRespDto {
 		return CommentRespDto.builder()
 			.commentId(comment.getId())
 			.content(comment.getContents())
+			.reply(comment.getManagerReply())
 			.member(member)
 			.build();
 	}
