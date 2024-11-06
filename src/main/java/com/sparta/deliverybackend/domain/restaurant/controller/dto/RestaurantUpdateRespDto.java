@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
-public class RestaurantDeleteRepDto {
+public class RestaurantUpdateRespDto {
     private Long id;
-    private LocalDateTime deletedAt;
+    private LocalDateTime updatedAt;
 
-    public RestaurantDeleteRepDto(Restaurant restaurant) {
+    public RestaurantUpdateRespDto(Restaurant restaurant) {
         this.id = restaurant.getId();
-        this.deletedAt = restaurant.getDeletedAt();
+        this.updatedAt = restaurant.getUpdatedAt();
     }
+
 }
