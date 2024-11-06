@@ -20,6 +20,8 @@ import com.sparta.deliverybackend.common.JwtHelper;
 import com.sparta.deliverybackend.domain.member.entity.JoinPath;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
+import com.sparta.deliverybackend.exception.customException.AuthCustomException;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
 import com.sparta.deliverybackend.global.security.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,8 +45,8 @@ class AuthServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> authService.register(req))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("이미 존재하는 이메일 입니다.");
+			.isInstanceOf(AuthCustomException.class)
+			.hasMessageContaining("중복된 이메일 입니다.");
 	}
 
 	@Test
@@ -70,8 +72,8 @@ class AuthServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> authService.login(req))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("존재하지 않는 유저입니다.");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당하는 회원을 찾을 수 없습니다.");
 	}
 
 	@Test
@@ -88,8 +90,8 @@ class AuthServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> authService.login(req))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("비밀번호가 일치하지 않습니다.");
+			.isInstanceOf(AuthCustomException.class)
+			.hasMessageContaining("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
 	}
 
 	@Test
@@ -125,8 +127,8 @@ class AuthServiceTest {
 
 		//when && then
 		assertThatThrownBy(() -> authService.loginWithOauth(email))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("가입된 유저를 찾을 수 없습니다");
+			.isInstanceOf(NotFoundEntityException.class)
+			.hasMessageContaining("해당하는 회원을 찾을 수 없습니다.");
 	}
 
 	@Test
