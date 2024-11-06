@@ -37,7 +37,7 @@ public class AdController {
 			.body(adRespDto);
 	}
 
-	// 광고 활성화
+	// 광고 활성화 상태
 	@PatchMapping("/{adId}/active")
 	public ResponseEntity<Void> activeAds(@PathVariable Long adId){
 		adService.activeAds(adId);
@@ -46,10 +46,19 @@ public class AdController {
 			.build();
 	}
 
-	// 광고 비활성화 (삭제)
-	@DeleteMapping("/{adId}/inactive")
+	// 광고 비활성화 상태
+	@PatchMapping("/{adId}/inactive")
 	public ResponseEntity<Void> inActiveAds(@PathVariable Long adId){
 		adService.inActiveAds(adId);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.build();
+	}
+
+	// 광고 삭제 상태
+	@DeleteMapping("/{adId}")
+	public ResponseEntity<Void> deleteAd(@PathVariable Long adId){
+		adService.deleteAd(adId);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
