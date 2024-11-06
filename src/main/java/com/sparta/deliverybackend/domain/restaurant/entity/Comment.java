@@ -54,4 +54,9 @@ public class Comment extends BaseTimeStampEntity {
 
 	@Column
 	private LocalDateTime repliedAt;
+
+	public void updateManagerReply(String reply) {
+		this.managerReply = reply;
+		this.repliedAt = LocalDateTime.now();
+	}
 }
