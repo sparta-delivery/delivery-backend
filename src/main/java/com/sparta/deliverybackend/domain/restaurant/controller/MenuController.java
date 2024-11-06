@@ -32,7 +32,7 @@ public class MenuController {
 
 	// 메뉴 생성
 	@PostMapping()
-	public ResponseEntity<MenuRespDto> createMenu(@RequestBody MenuCreateReqDto menuCreateReqDto,
+	public ResponseEntity<MenuRespDto> createMenu(@RequestBody @Valid MenuCreateReqDto menuCreateReqDto,
 		VerifiedMember verifiedMember) {
 		MenuRespDto menuRespDto = menuService.createMenu(menuCreateReqDto, verifiedMember);
 		return ResponseEntity
