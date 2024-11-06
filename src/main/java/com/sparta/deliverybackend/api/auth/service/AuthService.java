@@ -8,7 +8,9 @@ import com.sparta.deliverybackend.api.auth.controller.dto.LoginReqDto;
 import com.sparta.deliverybackend.api.auth.controller.dto.LoginResDto;
 import com.sparta.deliverybackend.api.auth.controller.dto.RegisterReqDto;
 import com.sparta.deliverybackend.common.JwtHelper;
+import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.entity.Member;
+import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
 import com.sparta.deliverybackend.global.security.PasswordEncoder;
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
 	private final MemberRepository memberRepository;
+	private final ManagerRepository managerRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtHelper jwtHelper;
 
@@ -66,5 +69,28 @@ public class AuthService {
 						.build();
 					memberRepository.save(oauthMember);
 				});
+	}
+
+	public void managerRegister(RegisterReqDto req) {
+		if (managerRepository.existsByEmail(req.email())) {
+			throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+		}
+		Manager manager = Manager.builder()
+			.nickname(req.nickname())
+			.joinPath(req.joinPath())
+			.email(req.email())
+			.password(passwordEncoder.encode(req.password()))
+			.build();
+		managerRepository.save(manager);
+	}
+
+	public LoginResDto managerLogin(LoginReqDto req) {
+		Manager manager = managerRepository.findByEmail(req.email())
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+		if (!passwordEncoder.matches(req.password(), manager.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+		}
+		String accessToken = jwtHelper.generateAccessToken(manager);
+		return new LoginResDto(accessToken);
 	}
 }
