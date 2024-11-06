@@ -36,4 +36,20 @@ public class AuthController {
 			.status(HttpStatus.OK)
 			.body(response);
 	}
+
+	@PostMapping("/register/manager")
+	public ResponseEntity<Void> managerRegister(@RequestBody RegisterReqDto req) {
+		authService.managerRegister(req);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.build();
+	}
+
+	@PostMapping("/login/manager")
+	public ResponseEntity<LoginResDto> managerLogin(@RequestBody LoginReqDto req) {
+		LoginResDto response = authService.managerLogin(req);
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(response);
+	}
 }
