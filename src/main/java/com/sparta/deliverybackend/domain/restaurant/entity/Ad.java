@@ -6,6 +6,8 @@ import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,20 +36,26 @@ public class Ad extends BaseTimeStampEntity {
 	private Restaurant restaurant;
 
 	// 광고 생성 시 광고 비활성 상태
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private boolean isActive = false;
+	private AdStatus adStatus;
 
-	// 광고 중지
-	@Column
-	private LocalDateTime deletedAt;
-
+	// 광고 활성화 상태
 	public void activeAds(){
-		this.isActive = true;
-		this.deletedAt = null;
+		if(this.adStatus != AdStatus.DELETED){
+			this.adStatus = AdStatus.ACTIVE;
+		}
 	}
 
+	// 광고 비활성화 상태
 	public void inActiveAds(){
-		this.isActive = false;
-		this.deletedAt = LocalDateTime.now();
+		if(this.adStatus != AdStatus.DELETED){
+			this.adStatus = AdStatus.INACTIVE;
+		}
+	}
+
+	// 광고 삭제 상태
+	public void delete(){
+		this.adStatus = AdStatus.DELETED;
 	}
 }
