@@ -28,6 +28,8 @@ import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
 import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.customException.OrderPriceMismatchingException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -113,7 +115,7 @@ class OrderServiceTest {
 	@DisplayName("주문 생성 시 메뉴가 없을 경우 예외 발생 테스트")
 	void createOrder_NoMenus() {
 		// when & then
-		assertThrows(IllegalArgumentException.class, () -> {
+		assertThrows(NotFoundEntityException.class, () -> {
 			orderService.createOrder(new VerifiedMember(1L), null);
 		});
 	}
@@ -159,7 +161,7 @@ class OrderServiceTest {
 		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu));
 
 		// when & then
-		assertThrows(IllegalArgumentException.class, () -> {
+		assertThrows(OrderPriceMismatchingException.class, () -> {
 			orderService.createOrder(new VerifiedMember(memberId), List.of(orderMenuDto));
 		});
 	}
@@ -228,7 +230,7 @@ class OrderServiceTest {
 		when(menuRepository.findAllById(anyList())).thenReturn(List.of(menu2));
 
 		// when & then
-		assertThrows(IllegalArgumentException.class, () -> {
+		assertThrows(NotFoundEntityException.class, () -> {
 			orderService.createOrder(new VerifiedMember(memberId), List.of(orderMenuDto1, orderMenuDto2));
 		});
 	}

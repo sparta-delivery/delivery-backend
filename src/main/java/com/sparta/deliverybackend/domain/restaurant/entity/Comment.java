@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import com.sparta.deliverybackend.domain.BaseTimeStampEntity;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.order.entity.Order;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,7 +64,7 @@ public class Comment extends BaseTimeStampEntity {
 
 	public void validateMember(Member member) {
 		if (!this.member.isSameMember(member)) {
-			throw new IllegalArgumentException("권한이 없습니다.");
+			throw new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_MEMBER);
 		}
 	}
 

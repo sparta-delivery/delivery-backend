@@ -12,6 +12,9 @@ import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.entity.Member;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
 import com.sparta.deliverybackend.domain.member.repository.MemberRepository;
+import com.sparta.deliverybackend.exception.customException.AuthCustomException;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 import com.sparta.deliverybackend.global.security.PasswordEncoder;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,7 @@ public class AuthService {
 
 	public void register(RegisterReqDto req) {
 		if (memberRepository.existsByEmail(req.email())) {
-			throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+			throw new AuthCustomException(ExceptionCode.DUPLICATED_EMAIL);
 		}
 		Member member = Member.builder()
 			.nickname(req.nickname())
@@ -40,9 +43,9 @@ public class AuthService {
 
 	public LoginResDto login(LoginReqDto req) {
 		Member member = memberRepository.findByEmail(req.email())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MEMBER));
 		if (!passwordEncoder.matches(req.password(), member.getPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new AuthCustomException(ExceptionCode.NO_MATCH_PASSWORD);
 		}
 		String accessToken = jwtHelper.generateAccessToken(member);
 		return new LoginResDto(accessToken);
@@ -50,7 +53,7 @@ public class AuthService {
 
 	public LoginResDto loginWithOauth(String email) {
 		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new IllegalArgumentException("가입된 유저를 찾을 수 없습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MEMBER));
 		String accessToken = jwtHelper.generateAccessToken(member);
 		return new LoginResDto(accessToken);
 	}
@@ -73,7 +76,7 @@ public class AuthService {
 
 	public void managerRegister(RegisterReqDto req) {
 		if (managerRepository.existsByEmail(req.email())) {
-			throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+			throw new AuthCustomException(ExceptionCode.DUPLICATED_EMAIL);
 		}
 		Manager manager = Manager.builder()
 			.nickname(req.nickname())
@@ -86,9 +89,9 @@ public class AuthService {
 
 	public LoginResDto managerLogin(LoginReqDto req) {
 		Manager manager = managerRepository.findByEmail(req.email())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MEMBER));
 		if (!passwordEncoder.matches(req.password(), manager.getPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new AuthCustomException(ExceptionCode.NO_MATCH_PASSWORD);
 		}
 		String accessToken = jwtHelper.generateAccessToken(manager);
 		return new LoginResDto(accessToken);
