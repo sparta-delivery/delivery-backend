@@ -3,6 +3,8 @@ package com.sparta.deliverybackend.domain.order.entity;
 import java.time.LocalDateTime;
 
 import com.sparta.deliverybackend.domain.member.entity.Member;
+import com.sparta.deliverybackend.exception.customException.EtcException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,7 +65,7 @@ public class Order {
 
 	public void validateStatusIsComplete() {
 		if (!orderStatus.equals(OrderStatus.COMPLETE)) {
-			throw new IllegalArgumentException("완료된 주문이 아닙니다.");
+			throw new EtcException(ExceptionCode.NO_COMPLETED_ORDER);
 		}
 	}
 

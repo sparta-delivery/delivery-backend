@@ -16,6 +16,8 @@ import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,11 +57,11 @@ public class OrderStatusValidationInterceptor implements HandlerInterceptor {
 				Long menuId = reqDto.getMenus().get(0).getMenuId();
 				// 메뉴와 레스토랑 정보를 가져옵니다.
 				Menu menu = menuRepository.findById(menuId)
-					.orElseThrow(() -> new IllegalArgumentException("Menu not found"));
+					.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MENU));
 
 				// menu_id를 통해 레스토랑 조회
 				Restaurant restaurant = restaurantRepository.findById(menu.getRestaurant().getId())
-					.orElseThrow(() -> new IllegalArgumentException("Restaurant not found for the menu"));
+					.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_RESTAURANT));
 
 				LocalTime now = LocalTime.now(ZoneId.of("Asia/Seoul"));
 				LocalTime openTime = LocalTime.parse(restaurant.getOpenTime(), DateTimeFormatter.ofPattern("HH:mm"));
@@ -92,7 +94,7 @@ public class OrderStatusValidationInterceptor implements HandlerInterceptor {
 			Long orderIdParam = Long.valueOf(uriParts[3]);
 
 			Order order = orderRepository.findById(orderIdParam)
-				.orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderIdParam));
+				.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_ORDER));
 
 			if (order.getOrderStatus() != OrderStatus.WAIT) {
 				res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
