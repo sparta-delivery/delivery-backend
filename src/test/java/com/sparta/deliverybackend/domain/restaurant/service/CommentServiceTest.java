@@ -205,4 +205,79 @@ class CommentServiceTest {
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("존재하지 않는 사장입니다.");
 	}
+
+	@Test
+	@DisplayName("일반 멤버 리뷰 삭제 정상 테스트")
+	public void member_delete_comment_success_test() {
+		//given
+		Long commentId = 1L;
+		CommentCreateReqDto req = new CommentCreateReqDto("comments");
+		VerifiedMember verifiedMember = new VerifiedMember(1L);
+		Member member = Member.builder()
+			.id(2L)
+			.build();
+		Comment comment = Comment.builder()
+			.id(commentId)
+			.member(member)
+			.contents(req.content())
+			.build();
+
+		when(commentRepository.findById(commentId))
+			.thenReturn(Optional.of(comment));
+		when(memberService.findMember(verifiedMember.id()))
+			.thenReturn(member);
+
+		//when
+		commentService.delete(verifiedMember, commentId);
+
+		//then
+		assertThat(comment.getDeletedAt()).isNotNull();
+	}
+
+	@Test
+	@DisplayName("리뷰 작성 멤버와 삭제 요청 멤버가 다르면 예외가 발생한다.")
+	public void member_delete_comment_authority_exception_test() {
+		//given
+		Long commentId = 1L;
+		CommentCreateReqDto req = new CommentCreateReqDto("comments");
+		VerifiedMember verifiedMember = new VerifiedMember(2L);
+		Member writer = Member.builder()
+			.id(1L)
+			.build();
+		Member member = Member.builder()
+			.id(2L)
+			.build();
+		Comment comment = Comment.builder()
+			.id(commentId)
+			.member(writer)
+			.contents(req.content())
+			.build();
+
+		when(commentRepository.findById(commentId))
+			.thenReturn(Optional.of(comment));
+		when(memberService.findMember(verifiedMember.id()))
+			.thenReturn(member);
+
+		//when
+		assertThatThrownBy(() -> commentService.delete(verifiedMember, commentId))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("권한이 없습니다.");
+	}
+
+	@Test
+	@DisplayName("리뷰 삭제 시 리뷰가 존재하지 않으면 예외가 발생한다.")
+	public void member_delete_comment_does_not_exist_exception_test() {
+		//given
+		Long commentId = 1L;
+		CommentCreateReqDto req = new CommentCreateReqDto("comments");
+		VerifiedMember verifiedMember = new VerifiedMember(2L);
+
+		when(commentRepository.findById(commentId))
+			.thenReturn(Optional.empty());
+
+		//when
+		assertThatThrownBy(() -> commentService.delete(verifiedMember, commentId))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("존재하지 않는 리뷰입니다.");
+	}
 }

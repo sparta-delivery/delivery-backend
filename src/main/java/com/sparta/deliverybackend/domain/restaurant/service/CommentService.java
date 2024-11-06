@@ -52,7 +52,7 @@ public class CommentService {
 		return CommentRespDto.from(comment);
 	}
 
-	public void deleteComment(VerifiedMember verifiedMember, Long commentId) {
+	public void delete(VerifiedMember verifiedMember, Long commentId) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 		Member member = memberService.findMember(verifiedMember.id());

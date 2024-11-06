@@ -52,7 +52,7 @@ public class CommentController {
 		@PathVariable Long commentId,
 		VerifiedMember verifiedMember
 	) {
-		commentService.deleteComment(verifiedMember, commentId);
+		commentService.delete(verifiedMember, commentId);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.build();
