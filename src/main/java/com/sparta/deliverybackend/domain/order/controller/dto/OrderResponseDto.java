@@ -1,5 +1,6 @@
 package com.sparta.deliverybackend.domain.order.controller.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.sparta.deliverybackend.domain.order.entity.Order;
@@ -28,6 +29,9 @@ public class OrderResponseDto {
 	// 주문 상황
 	private OrderStatus orderStatus;
 
+	// 주문 일시
+	private LocalDateTime orderDate;
+
 	public static OrderResponseDto of(Order order, List<OrderMenu> orderMenus) {
 
 		Long totalPrice = orderMenus.stream()
@@ -47,6 +51,7 @@ public class OrderResponseDto {
 			.requestMenus(requestMenus)
 			.totalPrice(totalPrice)
 			.orderStatus(order.getOrderStatus())
+			.orderDate(order.getCreatedAt())
 			.build();
 	}
 
