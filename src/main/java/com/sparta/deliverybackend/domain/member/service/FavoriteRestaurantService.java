@@ -54,7 +54,6 @@ public class FavoriteRestaurantService {
         return new FavoriteRestaurantAddRespDto(savedFavoriteRestaurant);
     }
 
-
     @Transactional
     public FavoriteRestaurantDeleteRespDto deleteFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
 
