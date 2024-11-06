@@ -12,4 +12,8 @@ public class EtcException extends RuntimeException {
 	public EtcException(ExceptionCode exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
+
+	public String getMessage() {
+		return exceptionCode.getMessage();
+	}
 }

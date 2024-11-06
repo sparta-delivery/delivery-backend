@@ -12,4 +12,8 @@ public class AuthCustomException extends RuntimeException {
 	public AuthCustomException(ExceptionCode exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
+
+	public String getMessage() {
+		return exceptionCode.getMessage();
+	}
 }

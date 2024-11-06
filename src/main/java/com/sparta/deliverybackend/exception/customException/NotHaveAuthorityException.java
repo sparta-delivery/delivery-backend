@@ -11,4 +11,8 @@ public class NotHaveAuthorityException extends RuntimeException {
 	public NotHaveAuthorityException(ExceptionCode exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
+
+	public String getMessage() {
+		return exceptionCode.getMessage();
+	}
 }
