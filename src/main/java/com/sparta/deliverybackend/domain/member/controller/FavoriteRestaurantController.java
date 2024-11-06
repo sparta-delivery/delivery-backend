@@ -4,7 +4,6 @@ import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.controller.dto.FavoriteRestaurantAddRespDto;
 import com.sparta.deliverybackend.domain.member.controller.dto.FavoriteRestaurantDeleteRespDto;
 import com.sparta.deliverybackend.domain.member.controller.dto.FavoriteRestaurantViewRespDto;
-import com.sparta.deliverybackend.domain.member.entity.FavoriteRestaurant;
 import com.sparta.deliverybackend.domain.member.service.FavoriteRestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
