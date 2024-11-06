@@ -24,6 +24,8 @@ public enum ExceptionCode {
 
 	NOT_FOUND_ORDER_MENU(HttpStatus.NOT_FOUND, "해당하는 주문_메뉴 정보를 찾을 수 없습니다."),
 
+	NOT_FOUND_FAVORITE(HttpStatus.NOT_FOUND, "해당하는 즐겨찾기 정보를 찾을 수 없습니다."),
+
 	NOT_HAVE_AUTHORITY_ORDER_CANCEL(HttpStatus.BAD_REQUEST, "이 주문 조작에 대한 취소 권한이 없습니다."),
 
 	NOT_HAVE_AUTHORITY_CREATE_MENU(HttpStatus.BAD_REQUEST, "메뉴 생성 권한이 없습니다."),
