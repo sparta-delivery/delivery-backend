@@ -13,7 +13,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -55,7 +59,7 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.manager = managerId;
 	}
 
-	public void update(String name, String openTime, String closeTime, int minPrice, Manager managerId){
+	public void update(String name, String openTime, String closeTime, int minPrice, Manager managerId) {
 		this.name = name;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
@@ -63,8 +67,14 @@ public class Restaurant extends BaseTimeStampEntity {
 		this.manager = managerId;
 	}
 
-	public void delete(){
+	public void delete() {
 		this.deletedAt = LocalDateTime.now();
+	}
+
+	public void validateRestaurantManager(Manager manager) {
+		if (!this.manager.isSameManager(manager)) {
+			throw new IllegalArgumentException("가게의 사장이 아닙니다.");
+		}
 	}
 
 }
