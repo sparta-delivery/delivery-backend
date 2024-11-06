@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class OptionReqDto {
+public class MenuOptionReqDto {
 
 	@NotNull(message = "옵션명을 입력해 주세요.")
 	private String name;
