@@ -11,4 +11,8 @@ public class OrderPriceMismatchingException extends RuntimeException {
 	public OrderPriceMismatchingException(ExceptionCode exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
+
+	public String getMessage() {
+		return exceptionCode.getMessage();
+	}
 }

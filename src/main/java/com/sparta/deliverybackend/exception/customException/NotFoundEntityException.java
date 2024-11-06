@@ -11,4 +11,8 @@ public class NotFoundEntityException extends RuntimeException {
 	public NotFoundEntityException(ExceptionCode exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
+
+	public String getMessage() {
+		return exceptionCode.getMessage();
+	}
 }
