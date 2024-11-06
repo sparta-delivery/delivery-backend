@@ -26,13 +26,15 @@ public enum ExceptionCode {
 
 	NOT_FOUND_FAVORITE(HttpStatus.NOT_FOUND, "해당하는 즐겨찾기 정보를 찾을 수 없습니다."),
 
-	NOT_HAVE_AUTHORITY_ORDER_CANCEL(HttpStatus.BAD_REQUEST, "이 주문 조작에 대한 취소 권한이 없습니다."),
+	NOT_HAVE_AUTHORITY_ORDER_CANCEL(HttpStatus.UNAUTHORIZED, "이 주문 조작에 대한 취소 권한이 없습니다."),
 
-	NOT_HAVE_AUTHORITY_CREATE_MENU(HttpStatus.BAD_REQUEST, "메뉴 생성 권한이 없습니다."),
+	NOT_HAVE_AUTHORITY_CREATE_MENU(HttpStatus.UNAUTHORIZED, "메뉴 생성 권한이 없습니다."),
 
-	NOT_HAVE_AUTHORITY_AD_CREATE(HttpStatus.BAD_REQUEST, "광고 생성에 대한 권한이 없습니다."),
+	NOT_HAVE_AUTHORITY_AD_CREATE(HttpStatus.UNAUTHORIZED, "광고 생성에 대한 권한이 없습니다."),
 
-	NOT_MANAGER(HttpStatus.BAD_REQUEST, "해당 식당의 메니저가 아닙니다."),
+	NOT_HAVE_AUTHORITY_MEMBER(HttpStatus.UNAUTHORIZED, "해당 권한이 없습니다."),
+
+	NOT_MANAGER(HttpStatus.UNAUTHORIZED, "해당 식당의 메니저가 아닙니다."),
 
 	TOO_MUCH_RESTAURANT(HttpStatus.BAD_REQUEST, "최대 3개 까지만 식당을 생성 할 수 있습니다."),
 
@@ -40,7 +42,13 @@ public enum ExceptionCode {
 
 	NOT_SAME_RESTAURANT_ORDER(HttpStatus.BAD_REQUEST, "동일 식당의 메뉴만 주문 가능합니다."),
 
-	NO_SATISFY_MIN_PRICE(HttpStatus.BAD_REQUEST, "최소 주문 금액 미달입니다.");
+	NO_SATISFY_MIN_PRICE(HttpStatus.BAD_REQUEST, "최소 주문 금액 미달입니다."),
+
+	NO_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
+
+	DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
+
+	NO_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "완료된 주문이 아닙니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
