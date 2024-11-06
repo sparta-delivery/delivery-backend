@@ -13,8 +13,10 @@ import com.sparta.deliverybackend.domain.restaurant.entity.AdStatus;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.AdRepository;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.customException.NotHaveAuthorityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,21 +28,21 @@ public class AdService {
 	private final ManagerRepository managerRepository;
 
 	// 광고 조회 검증
-	private Ad findAdOrThrow(Long adId){
+	private Ad findAdOrThrow(Long adId) {
 		return adRepository.findById(adId)
-			.orElseThrow(() -> new EntityNotFoundException("광고를 찾을 수 없습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_AD));
 	}
 
 	@Transactional
 	public AdRespDto createAd(AdReqDto adReqDto, VerifiedMember verifiedMember) {
 		Restaurant restaurant = restaurantRepository.findById(adReqDto.getRestaurantId())
-			.orElseThrow(()-> new EntityNotFoundException("가게를 찾을 수 없습니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_RESTAURANT));
 
 		Manager manager = managerRepository.findById(verifiedMember.id())
-			.orElseThrow(() -> new IllegalArgumentException("광고 생성 권한이 없습니다."));
+			.orElseThrow(() -> new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_AD_CREATE));
 
-		if(!restaurant.getManager().getId().equals(manager.getId())){
-			throw new IllegalArgumentException("사장님 가게가 아닙니다. 광고를 생성할 권한이 없습니다.");
+		if (!restaurant.getManager().getId().equals(manager.getId())) {
+			throw new NotHaveAuthorityException(ExceptionCode.NOT_HAVE_AUTHORITY_AD_CREATE);
 		}
 
 		if(adRepository.existsById(restaurant.getId())){

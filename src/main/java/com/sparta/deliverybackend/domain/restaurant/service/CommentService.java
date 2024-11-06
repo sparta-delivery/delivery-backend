@@ -14,6 +14,8 @@ import com.sparta.deliverybackend.domain.restaurant.controller.dto.CommentRespDt
 import com.sparta.deliverybackend.domain.restaurant.entity.Comment;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.CommentRepository;
+import com.sparta.deliverybackend.exception.customException.NotFoundEntityException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,9 +46,9 @@ public class CommentService {
 
 	public CommentRespDto createManagerComment(CommentCreateReqDto req, VerifiedMember verifiedMember, Long commentId) {
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_COMMENT));
 		Manager manager = managerRepository.findById(verifiedMember.id())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사장입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_MANAGER));
 		comment.getRestaurant().validateRestaurantManager(manager);
 		comment.updateManagerReply(req.content());
 		return CommentRespDto.from(comment);
@@ -54,7 +56,7 @@ public class CommentService {
 
 	public void delete(VerifiedMember verifiedMember, Long commentId) {
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+			.orElseThrow(() -> new NotFoundEntityException(ExceptionCode.NOT_FOUND_COMMENT));
 		Member member = memberService.findMember(verifiedMember.id());
 		comment.validateMember(member);
 
