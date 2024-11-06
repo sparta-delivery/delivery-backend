@@ -22,22 +22,7 @@ public class FavoriteRestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final FavoriteRestaurantRepository favoriteRestaurantRepository;
 
-    public FavoriteRestaurantAddRespDto addFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
-        //멤버랑 가게 존재
-        Member memberId = memberRepository.findById(verifiedMember.id())
-                .orElseThrow(()-> new IllegalArgumentException("멤버가 존재하지 않습니다."));
-
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다"));
-
-        FavoriteRestaurant favoriteRestaurant = new FavoriteRestaurant(restaurant, memberId);
-        FavoriteRestaurant savedFavoriteRestaurant = favoriteRestaurantRepository.save(favoriteRestaurant);
-
-        return new FavoriteRestaurantAddRespDto(savedFavoriteRestaurant);
-    }
-
-    @Transactional
-    public FavoriteRestaurantDeleteRespDto deleteFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
+//    public FavoriteRestaurantAddRespDto addFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
 //        //멤버랑 가게 존재
 //        Member memberId = memberRepository.findById(verifiedMember.id())
 //                .orElseThrow(()-> new IllegalArgumentException("멤버가 존재하지 않습니다."));
@@ -45,7 +30,54 @@ public class FavoriteRestaurantService {
 //        Restaurant restaurant = restaurantRepository.findById(restaurantId)
 //                .orElseThrow(()-> new IllegalArgumentException("선택한 가게가 존재하지 않습니다"));
 //
-        FavoriteRestaurant favoriteRestaurant = favoriteRestaurantRepository.findByRestaurantId(restaurantId);
+//        FavoriteRestaurant favoriteRestaurant = new FavoriteRestaurant(restaurant, memberId);
+//        FavoriteRestaurant savedFavoriteRestaurant = favoriteRestaurantRepository.save(favoriteRestaurant);
+//
+//        return new FavoriteRestaurantAddRespDto(savedFavoriteRestaurant);
+//    }
+
+    public FavoriteRestaurantAddRespDto addFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
+        // 멤버와 가게 확인
+        Member member = memberRepository.findById(verifiedMember.id())
+                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+
+        // 기존의 FavoriteRestaurant 존재 여부 확인
+        Optional<FavoriteRestaurant> existingFavorite = favoriteRestaurantRepository
+                .findByRestaurantAndMember(restaurant, member);
+
+        FavoriteRestaurant favoriteRestaurant;
+
+        if (existingFavorite.isPresent()) {
+            favoriteRestaurant = existingFavorite.get();
+
+            if (favoriteRestaurant.getDeletedAt() != null) {
+                favoriteRestaurant.setDeletedAt(null);
+            }
+        } else {
+            favoriteRestaurant = new FavoriteRestaurant(restaurant, member);
+        }
+
+        FavoriteRestaurant savedFavoriteRestaurant = favoriteRestaurantRepository.save(favoriteRestaurant);
+
+        return new FavoriteRestaurantAddRespDto(savedFavoriteRestaurant);
+    }
+
+
+    @Transactional
+    public FavoriteRestaurantDeleteRespDto deleteFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
+
+        // 멤버 확인
+        Member member = memberRepository.findById(verifiedMember.id())
+                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+
+        FavoriteRestaurant favoriteRestaurant = favoriteRestaurantRepository.findByRestaurantAndMember(restaurant, member)
+                .orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기가 존재하지 않습니다."));
 
         favoriteRestaurant.delete();
         favoriteRestaurantRepository.save(favoriteRestaurant);

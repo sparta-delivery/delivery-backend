@@ -3,10 +3,7 @@ package com.sparta.deliverybackend.domain.member.entity;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +28,7 @@ public class FavoriteRestaurant {
 	private Member member;
 
 	@Column
+	@Setter
 	private LocalDateTime deletedAt;
 
 	public FavoriteRestaurant(Restaurant restaurantId, Member memberId) {
