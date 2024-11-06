@@ -33,7 +33,7 @@ public class Ad extends BaseTimeStampEntity {
 	@JoinColumn(name = "restaurant_id", nullable = false)
 	private Restaurant restaurant;
 
-	// 광고 생성 시, 광고 비활성 상태
+	// 광고 생성 시 광고 비활성 상태
 	@Column(nullable = false)
 	private boolean isActive = false;
 
