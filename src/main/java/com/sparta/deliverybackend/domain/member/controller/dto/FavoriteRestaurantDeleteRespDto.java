@@ -15,5 +15,4 @@ public class FavoriteRestaurantDeleteRespDto {
         this.restaurantId = favoriteRestaurant.getId();
         this.deletedAt = favoriteRestaurant.getDeletedAt();
     }
-
 }
