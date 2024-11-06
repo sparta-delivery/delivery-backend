@@ -16,11 +16,25 @@ public enum ExceptionCode {
 
 	NOT_FOUND_RESTAURANT(HttpStatus.NOT_FOUND, "해당 식당을 찾을 수 없습니다."),
 
+	NOT_FOUND_AD(HttpStatus.NOT_FOUND, "해당 광고를 찾을 수 없습니다."),
+
+	NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
+
+	NOT_FOUND_MANAGER(HttpStatus.NOT_FOUND, "해당 사장을 찾을 수 없습니다."),
+
 	NOT_FOUND_ORDER_MENU(HttpStatus.NOT_FOUND, "해당하는 주문_메뉴 정보를 찾을 수 없습니다."),
 
 	NOT_HAVE_AUTHORITY_ORDER_CANCEL(HttpStatus.BAD_REQUEST, "이 주문 조작에 대한 취소 권한이 없습니다."),
 
+	NOT_HAVE_AUTHORITY_CREATE_MENU(HttpStatus.BAD_REQUEST, "메뉴 생성 권한이 없습니다."),
+
+	NOT_HAVE_AUTHORITY_AD_CREATE(HttpStatus.BAD_REQUEST, "광고 생성에 대한 권한이 없습니다."),
+
 	NOT_MANAGER(HttpStatus.BAD_REQUEST, "해당 식당의 메니저가 아닙니다."),
+
+	TOO_MUCH_RESTAURANT(HttpStatus.BAD_REQUEST, "최대 3개 까지만 식당을 생성 할 수 있습니다."),
+
+	NOT_MATCH_RESTAURANT_MENU(HttpStatus.BAD_REQUEST, "해당 식당의 메뉴가 아닙니다."),
 
 	NOT_SAME_RESTAURANT_ORDER(HttpStatus.BAD_REQUEST, "동일 식당의 메뉴만 주문 가능합니다."),
 
