@@ -30,7 +30,7 @@ public class CommentService {
 		order.validateOrderedMember(member);
 		Restaurant orderRestaurant = orderService.findOrderRestaurant(orderId);
 		Comment comment = Comment.builder()
-			.contents(req.getContent())
+			.contents(req.content())
 			.order(order)
 			.member(member)
 			.restaurant(orderRestaurant)
