@@ -30,6 +30,9 @@ public class FavoriteRestaurantService {
         Member member = findMember(verifiedMember);
         Restaurant restaurant = findRestaurant(restaurantId);
 
+        if(restaurant.getDeletedAt() != null){
+            throw new IllegalArgumentException("탈퇴한 가게는 즐겨찾기에 추가할 수 없습니다");
+        }
         // 기존의 FavoriteRestaurant 존재 여부 확인
         Optional<FavoriteRestaurant> existingFavorite = favoriteRestaurantRepository
                 .findByRestaurantAndMember(restaurant, member);

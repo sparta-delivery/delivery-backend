@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sparta.deliverybackend.api.s3.service.S3Service;
+import com.sparta.deliverybackend.domain.restaurant.controller.dto.*;
+import com.sparta.deliverybackend.domain.restaurant.entity.CuisineType;
+import com.sparta.deliverybackend.domain.restaurant.entity.Menu;
+import com.sparta.deliverybackend.domain.restaurant.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,11 +28,6 @@ import org.springframework.data.domain.Pageable;
 import com.sparta.deliverybackend.api.auth.controller.dto.VerifiedMember;
 import com.sparta.deliverybackend.domain.member.entity.Manager;
 import com.sparta.deliverybackend.domain.member.repository.ManagerRepository;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateRespDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantCreateReqDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantDeleteRespDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateRespDto;
-import com.sparta.deliverybackend.domain.restaurant.controller.dto.RestaurantUpdateReqDto;
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 import com.sparta.deliverybackend.domain.restaurant.repository.RestaurantRepository;
 import org.springframework.mock.web.MockMultipartFile;
@@ -41,6 +40,9 @@ class RestaurantServiceTest {
 
 	@Mock
 	private ManagerRepository managerRepository;
+
+	@Mock
+	private MenuRepository menuRepository;
 
 	@InjectMocks
 	private RestaurantService restaurantService;
@@ -93,6 +95,7 @@ class RestaurantServiceTest {
 	@Test
 	@DisplayName("가게 다건 조회 테스트")
 	void testGetRestaurants() {
+		// Given
 		Pageable pageable = PageRequest.of(0, 10);
 
 		Restaurant restaurant1 = new Restaurant("Test Restaurant 1", "09:00", "22:00", 1000, manager);
@@ -102,14 +105,45 @@ class RestaurantServiceTest {
 		List<Restaurant> restaurants = Arrays.asList(restaurant1, restaurant2, restaurant3);
 		Page<Restaurant> restaurantPage = new PageImpl<>(restaurants, pageable, restaurants.size());
 
-		when(restaurantRepository.findAll(pageable)).thenReturn(restaurantPage);
+		// Mocking the repository method to return the restaurant page
+		when(restaurantRepository.findAllByDeletedAtIsNull(pageable)).thenReturn(restaurantPage);
 
+		// When
 		Page<RestaurantCreateRespDto> result = restaurantService.getRestaurants(pageable, verifiedMember);
 
+		// Then
 		assertEquals(3, result.getTotalElements()); // 총 요소 개수 검증
 		assertEquals("Test Restaurant 1", result.getContent().get(0).getName()); // 첫 번째 레스토랑 이름 검증
 		assertEquals("Test Restaurant 2", result.getContent().get(1).getName()); // 두 번째 레스토랑 이름 검증
 		assertEquals("Test Restaurant 3", result.getContent().get(2).getName()); // 세 번째 레스토랑 이름 검증
+	}
+
+	@Test
+	@DisplayName("가게 단건 조회 테스트")
+	void testGetRestaurantInfo(){
+
+		Long restaurantId = 1L;
+		Manager manager = new Manager();
+		manager.setId(1L); // Manager의 ID 설정
+
+		Restaurant restaurant = new Restaurant("Test Restaurant", "09:00", "22:00", 1000, manager);
+		restaurant.setId(restaurantId);
+
+		Menu menu1 = new Menu(1L, "Menu1", 1500, "Description1", CuisineType.KOREAN, restaurant, null, "option");
+		Menu menu2 = new Menu(2L, "Menu2", 2000, "Description2", CuisineType.CHINESE, restaurant, null, "option");
+
+		List<Menu> menus = Arrays.asList(menu1, menu2);
+
+		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurant));
+		when(menuRepository.findByRestaurantId(restaurantId)).thenReturn(menus);
+		when(managerRepository.findById(verifiedMember.id())).thenReturn(Optional.of(manager));
+
+		RestaurantViewRespDto response = restaurantService.getRestaurantInfo(restaurantId, verifiedMember);
+
+		assertNotNull(response); // 응답이 null이 아니어야 함
+		assertEquals(2, response.getMenus().size()); // 메뉴 리스트 사이즈 검증
+		assertEquals("Menu1", response.getMenus().get(0).getName()); // 첫 번째 메뉴 이름 검증
+		assertEquals("Menu2", response.getMenus().get(1).getName()); // 두 번째 메뉴 이름 검증
 	}
 
 	@Test
