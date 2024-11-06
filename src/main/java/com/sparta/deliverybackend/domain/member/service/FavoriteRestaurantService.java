@@ -26,12 +26,9 @@ public class FavoriteRestaurantService {
     private final FavoriteRestaurantRepository favoriteRestaurantRepository;
 
     public FavoriteRestaurantAddRespDto addFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
-        // 멤버와 가게 확인
-        Member member = memberRepository.findById(verifiedMember.id())
-                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+        Member member = findMember(verifiedMember);
+        Restaurant restaurant = findRestaurant(restaurantId);
 
         // 기존의 FavoriteRestaurant 존재 여부 확인
         Optional<FavoriteRestaurant> existingFavorite = favoriteRestaurantRepository
@@ -50,19 +47,14 @@ public class FavoriteRestaurantService {
         }
 
         FavoriteRestaurant savedFavoriteRestaurant = favoriteRestaurantRepository.save(favoriteRestaurant);
-
         return new FavoriteRestaurantAddRespDto(savedFavoriteRestaurant);
     }
 
     @Transactional
     public FavoriteRestaurantDeleteRespDto deleteFavoriteRestaurant(Long restaurantId, VerifiedMember verifiedMember) {
 
-        // 멤버 확인
-        Member member = memberRepository.findById(verifiedMember.id())
-                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
-
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
+        Member member = findMember(verifiedMember);
+        Restaurant restaurant = findRestaurant(restaurantId);
 
         FavoriteRestaurant favoriteRestaurant = favoriteRestaurantRepository.findByRestaurantAndMember(restaurant, member)
                 .orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기가 존재하지 않습니다."));
@@ -74,8 +66,7 @@ public class FavoriteRestaurantService {
 
     public List<FavoriteRestaurantViewRespDto> getFavoriteRestaurants(VerifiedMember verifiedMember) {
 
-        Member member = memberRepository.findById(verifiedMember.id())
-                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
+        Member member = findMember(verifiedMember);
 
         List<FavoriteRestaurant> favoriteRestaurantList = favoriteRestaurantRepository
                 .findAllByMemberAndDeletedAtIsNull(member);
@@ -83,5 +74,15 @@ public class FavoriteRestaurantService {
         return favoriteRestaurantList.stream()
                 .map(FavoriteRestaurantViewRespDto::new)
                 .collect(Collectors.toList());
+    }
+
+    private Member findMember(VerifiedMember verifiedMember){
+        return memberRepository.findById(verifiedMember.id())
+                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다."));
+    }
+
+    private Restaurant findRestaurant(Long restaurantId){
+        return restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("선택한 가게가 존재하지 않습니다."));
     }
 }
