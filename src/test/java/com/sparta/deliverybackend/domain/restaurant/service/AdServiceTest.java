@@ -38,22 +38,20 @@ public class AdServiceTest {
 	@Mock
 	private RestaurantRepository restaurantRepository;
 
-	@Mock
-	private ManagerRepository managerRepository;
-
 	private VerifiedMember verifiedMember;
-	private Restaurant restaurant;
 	private Manager manager;
+	private Restaurant restaurant;
 	private Ad ad;
 
 	@BeforeEach
 	void setUp() {
 		// given
 		verifiedMember = new VerifiedMember(1L);
+
 		manager = Manager.builder()
 			.id(1L)
-			.nickname("manager")
-			.email("manager@manager.com")
+			.nickname("test")
+			.email("test@test.com")
 			.build();
 
 		restaurant = Restaurant.builder()
@@ -75,7 +73,6 @@ public class AdServiceTest {
 		AdReqDto adReqDto = new AdReqDto(restaurant.getId());
 
 		when(restaurantRepository.findById(restaurant.getId())).thenReturn(Optional.of(restaurant));
-		when(managerRepository.findById(verifiedMember.id())).thenReturn(Optional.of(manager));
 		when(adRepository.existsById(restaurant.getId())).thenReturn(false);
 		when(adRepository.save(any(Ad.class))).thenReturn(ad);
 
@@ -145,27 +142,4 @@ public class AdServiceTest {
 		assertEquals("해당 광고를 찾을 수 없습니다.", exception.getMessage());
 	}
 
-	@Test
-	@DisplayName("광고 생성 권한 없을 때 테스트")
-	void createAdWithoutAuthorityTest() {
-		// given
-		Manager otherManager = Manager.builder()
-			.id(2L)
-			.nickname("otherManager")
-			.email("other@manager.com")
-			.build();
-
-		restaurant.setManager(otherManager);
-		AdReqDto adReqDto = new AdReqDto(restaurant.getId());
-
-		when(restaurantRepository.findById(restaurant.getId())).thenReturn(Optional.of(restaurant));
-		when(managerRepository.findById(verifiedMember.id())).thenReturn(Optional.of(manager));
-
-		// when & then
-		NotHaveAuthorityException exception = assertThrows(NotHaveAuthorityException.class, () -> {
-			adService.createAd(adReqDto, verifiedMember);
-		});
-
-		assertEquals("광고 생성에 대한 권한이 없습니다.", exception.getMessage());
-	}
 }

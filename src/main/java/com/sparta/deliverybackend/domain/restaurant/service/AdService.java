@@ -58,17 +58,20 @@ public class AdService {
 	public void activeAds(Long adId) {
 		Ad ad = findAd(adId);
 		ad.activeAds();
+		adRepository.save(ad);
 	}
 
 	@Transactional
 	public void inActiveAds(Long adId) {
 		Ad ad = findAd(adId);
 		ad.inActiveAds();
+		adRepository.save(ad);
 	}
 
 	@Transactional
 	public void deleteAd(Long adId) {
 		Ad ad = findAd(adId);
 		ad.delete();
+		adRepository.save(ad);
 	}
 }
