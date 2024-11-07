@@ -14,14 +14,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
-@Table
+@Table(name = "manager")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Manager extends BaseTimeStampEntity {
+public class Manager extends BaseTimeStampEntity implements User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +41,8 @@ public class Manager extends BaseTimeStampEntity {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private JoinPath joinPath;
+
+	public boolean isSameManager(Manager manager) {
+		return id.equals(manager.id);
+	}
 }

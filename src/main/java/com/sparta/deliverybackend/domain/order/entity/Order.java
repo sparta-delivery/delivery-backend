@@ -2,9 +2,9 @@ package com.sparta.deliverybackend.domain.order.entity;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import com.sparta.deliverybackend.domain.member.entity.Member;
+import com.sparta.deliverybackend.exception.customException.EtcException;
+import com.sparta.deliverybackend.exception.enums.ExceptionCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,14 +16,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "orders")
 @Builder
@@ -43,11 +43,37 @@ public class Order {
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
 
-	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column
 	private LocalDateTime createdAt;
 
-	@Column()
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column
 	private LocalDateTime completedAt;
+
+	public void updateOrderStatus() {
+		this.orderStatus = this.orderStatus.next();
+		if (this.orderStatus == OrderStatus.COMPLETE) {
+			this.completeOrder();
+		}
+	}
+
+	public void completeOrder() {
+		this.orderStatus = OrderStatus.COMPLETE;
+		if (this.completedAt == null) {
+			this.completedAt = LocalDateTime.now();
+		}
+	}
+
+	public void validateStatusIsComplete() {
+		if (!orderStatus.equals(OrderStatus.COMPLETE)) {
+			throw new EtcException(ExceptionCode.NO_COMPLETED_ORDER);
+		}
+	}
+
+	public void validateOrderedMember(Member otherMember) {
+		member.validateAuthority(otherMember);
+	}
+
+	public void cancelOrder() {
+		orderStatus = OrderStatus.CANCELED;
+	}
 }

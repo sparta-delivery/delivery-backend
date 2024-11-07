@@ -2,21 +2,14 @@ package com.sparta.deliverybackend.domain.member.entity;
 
 import com.sparta.deliverybackend.domain.restaurant.entity.Restaurant;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table
+@Table(name = "favorite_restaurant")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +26,17 @@ public class FavoriteRestaurant {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	@Column
+	@Setter
+	private LocalDateTime deletedAt;
+
+	public FavoriteRestaurant(Restaurant restaurantId, Member memberId) {
+		this.restaurant = restaurantId;
+		this.member = memberId;
+	}
+
+	public void delete(){
+		this.deletedAt = LocalDateTime.now();
+	}
 }

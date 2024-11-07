@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "cart")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

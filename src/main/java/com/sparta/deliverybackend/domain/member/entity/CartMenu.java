@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table
+@Table(name = "cart_menu")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

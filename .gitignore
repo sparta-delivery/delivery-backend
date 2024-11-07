@@ -36,8 +36,13 @@ out/
 ### VS Code ###
 .vscode/
 application.properties
+application-oauth.properties
 
 .DS_Store
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+
+.env
+application-ouath.properties
+application.yml
