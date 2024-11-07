@@ -22,7 +22,6 @@ public class Oauth2Config {
 
 	private final Oauth2Properties properties;
 	private final RestTemplate restTemplate;
-	private final Oauth2ClientService oauthClientService;
 
 	@Bean
 	public InMemoryProviderRepository inMemoryProviderRepository() {
